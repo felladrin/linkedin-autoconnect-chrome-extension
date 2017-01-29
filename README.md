@@ -8,6 +8,12 @@ Install this extension, go to "People You May Know" or "Search People" page on L
 
 LinkedIn AutoConnect: <https://chrome.google.com/webstore/detail/linkedin-autoconnect/jnpbfhigciimemdiiicffgcakpbidbgh>
 
+## Screenshots
+
+![LinkedIn AutoConnect Screenshot #1](screenshots/linkedin_autoconnect_screenshot_1.png)
+
+![LinkedIn AutoConnect Screenshot #2](screenshots/linkedin_autoconnect_screenshot_2.png)
+
 ## License
 
 The MIT License  
