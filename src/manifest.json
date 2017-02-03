@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "LinkedIn AutoConnect",
   "description": "Automatically clicks all 'Connect' buttons available on LinkedIn 'Search People' and 'People You May Know' pages.",
-  "version": "1.0",
+  "version": "1.0.1",
   "browser_action": {
     "default_icon": "icon.png",
     "default_popup": "popup.html"
@@ -10,7 +10,6 @@
   "permissions": [
     "activeTab",
     "tabs",
-    "*://linkedin.com/*",
     "*://*.linkedin.com/*"
   ]
 }
