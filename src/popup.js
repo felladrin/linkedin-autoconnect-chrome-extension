@@ -13,11 +13,11 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         var isOnSearchPage = function () {
-            return strContains(tab.url, "/vsearch/p");
+            return strContains(tab.url, "linkedin.com/vsearch/p");
         };
 
         var isOnPymkPage = function () {
-            return strContains(tab.url, "/people/pymk");
+            return strContains(tab.url, "linkedin.com/people/pymk");
         };
 
         var openUrlOnCurrentTab = function (url) {
@@ -33,7 +33,8 @@ document.addEventListener('DOMContentLoaded', function () {
         var onTabUpdated = function (tabId, changeInfo, tab) {
             if (changeInfo.status == "loading") {
                 onTabInfoIsLoaded(tab);
-                if (strContains(tab.url, "/people/contacts-search-invite-submit-reconnect")) {
+                if (strContains(tab.url, "linkedin.com/people/contacts-search-invite-submit-reconnect")
+                    || strContains(tab.url, "linkedin.com/people/invite")) {
                     chrome.tabs.executeScript(tabId, {
                         code: 'history.back();'
                     });
@@ -68,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             locationInfo.innerHTML = '<p>Select one of the following<br/>LinkedIn Pages to open:</p><p><button id="openLinkedInPymkPage"><span>People You May Know</span></button></p><p><button id="openLinkedInSearchPage"><span>Search People</span></button></p>';
             document.getElementById('openLinkedInSearchPage').addEventListener('click', function () {
-                openUrlOnCurrentTab('https://www.linkedin.com/vsearch/p?f_N=S');
+                openUrlOnCurrentTab('https://www.linkedin.com/vsearch/p?f_N=S&openAdvancedForm=true');
             });
             document.getElementById('openLinkedInPymkPage').addEventListener('click', function () {
                 openUrlOnCurrentTab('https://www.linkedin.com/people/pymk');
