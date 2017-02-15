@@ -13,11 +13,11 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         var isOnSearchPage = function () {
-            return strContains(tab.url, "linkedin.com/vsearch/p");
+            return (strContains(tab.url, "linkedin.com/vsearch/p") || strContains(tab.url, "linkedin.com/search/results/people"));
         };
 
         var isOnPymkPage = function () {
-            return strContains(tab.url, "linkedin.com/people/pymk");
+            return (strContains(tab.url, "linkedin.com/people/pymk") || strContains(tab.url, "linkedin.com/mynetwork"));
         };
 
         var openUrlOnCurrentTab = function (url) {
@@ -67,12 +67,12 @@ document.addEventListener('DOMContentLoaded', function () {
         } else if (isOnPymkPage()) {
             locationInfo.innerHTML = "You're on 'People You May Know' page! Scroll down the page to load more contacts when needed.";
         } else {
-            locationInfo.innerHTML = '<p>Select one of the following<br/>LinkedIn Pages to open:</p><p><button id="openLinkedInPymkPage"><span>People You May Know</span></button></p><p><button id="openLinkedInSearchPage"><span>Search People</span></button></p>';
+            locationInfo.innerHTML = '<p>Select one of the following<br/>LinkedIn Pages to open:</p><p><button id="openLinkedInSearchPage"><span>Search People</span></button></p><p><button id="openLinkedInPymkPage"><span>People You May Know</span></button></p>';
             document.getElementById('openLinkedInSearchPage').addEventListener('click', function () {
-                openUrlOnCurrentTab('https://www.linkedin.com/vsearch/p?f_N=S&openAdvancedForm=true');
+                openUrlOnCurrentTab('https://www.linkedin.com/search/results/people/?facetNetwork=%5B"S"%5D');
             });
             document.getElementById('openLinkedInPymkPage').addEventListener('click', function () {
-                openUrlOnCurrentTab('https://www.linkedin.com/people/pymk');
+                openUrlOnCurrentTab('https://www.linkedin.com/mynetwork/');
             });
         }
 
