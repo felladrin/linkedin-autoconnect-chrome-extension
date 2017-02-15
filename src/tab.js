@@ -18,20 +18,46 @@ var addPeopleFromSearchPage = function () {
         return;
     }
 
+    var delayBetweenClicks = 500;
+
     var alreadyInvited = 0;
 
-    document.querySelectorAll('.primary-action-button').forEach(function (item) {
-        if (item.innerHTML == 'Connect' && !arrayContains(extractProfileId(item.getAttribute("href")), buttonsClicked)) {
+    var buttonsFromOldInterface = document.querySelectorAll('.primary-action-button');
+
+    var buttonsFromNewInterface = document.querySelectorAll('button.search-result__actions--primary.m5:enabled');
+
+    if (buttonsFromOldInterface.length > 0) {
+        buttonsFromOldInterface.forEach(function (item) {
+            if (!arrayContains(extractProfileId(item.getAttribute("href")), buttonsClicked)) {
+                setTimeout(function () {
+                    if (running) {
+                        item.focus();
+                        item.click();
+                        buttonsClicked.push(extractProfileId(item.getAttribute("href")));
+                        sessionStorage.setItem('buttonsClicked', JSON.stringify(buttonsClicked));
+                    }
+                }, alreadyInvited++ * delayBetweenClicks);
+            }
+        });
+    } else if (buttonsFromNewInterface.length > 0) {
+        delayBetweenClicks = 1500;
+        buttonsFromNewInterface.forEach(function (item) {
             setTimeout(function () {
                 if (running) {
+                    var buttonSendNow = document.querySelector('button.button-primary-large.ml3');
+                    if (buttonSendNow) {
+                        buttonSendNow.click();
+                    }
                     item.focus();
                     item.click();
-                    buttonsClicked.push(extractProfileId(item.getAttribute("href")));
-                    sessionStorage.setItem('buttonsClicked', JSON.stringify(buttonsClicked));
+                    buttonSendNow = document.querySelector('button.button-primary-large.ml3');
+                    if (buttonSendNow) {
+                        buttonSendNow.click();
+                    }
                 }
-            }, alreadyInvited++ * 500);
-        }
-    });
+            }, alreadyInvited++ * delayBetweenClicks);
+        });
+    }
 
     setTimeout(function () {
         if (!running) {
@@ -39,16 +65,22 @@ var addPeopleFromSearchPage = function () {
         }
         var connectButtonsLeft = false;
         document.querySelectorAll('.primary-action-button').forEach(function (item) {
-            if (item.innerHTML == 'Connect' && !arrayContains(extractProfileId(item.getAttribute("href")), buttonsClicked)) {
+            if (!arrayContains(extractProfileId(item.getAttribute("href")), buttonsClicked)) {
                 connectButtonsLeft = true;
             }
         });
         if (connectButtonsLeft) {
             addPeopleFromSearchPage();
         } else {
-            document.querySelector('.next > a').click();
+            var nextButtonFromOldInterface = document.querySelector('.next > a');
+            var nextButtonFromNewInterface = document.querySelector('button.next');
+            if (nextButtonFromOldInterface) {
+                nextButtonFromOldInterface.click();
+            } else if (nextButtonFromNewInterface) {
+                nextButtonFromNewInterface.click();
+            }
         }
-    }, 6000);
+    }, alreadyInvited * delayBetweenClicks  + 1000);
 };
 
 var addPeopleFromPymkPage = function () {
@@ -58,16 +90,24 @@ var addPeopleFromPymkPage = function () {
 
     var alreadyInvited = 0;
 
-    document.querySelectorAll('.bt-request-buffed').forEach(function (item) {
-        if (strContains(item.innerHTML, 'Connect')) {
-            setTimeout(function () {
-                if (running) {
-                    item.focus();
-                    item.click();
-                }
-            }, alreadyInvited++ * 1000);
-        }
-    });
+    var buttonsFromOldInterface = document.querySelectorAll('.bt-request-buffed');
+
+    var buttonsFromNewInterface = document.querySelectorAll('button.mn-person-card__person-btn-ext');
+
+    var functionToBeCalledOnButtons = function (item) {
+        setTimeout(function () {
+            if (running) {
+                item.focus();
+                item.click();
+            }
+        }, alreadyInvited++ * 1000);
+    };
+
+    if (buttonsFromOldInterface.length > 0) {
+        buttonsFromOldInterface.forEach(functionToBeCalledOnButtons);
+    } else if (buttonsFromNewInterface.length > 0) {
+        buttonsFromNewInterface.forEach(functionToBeCalledOnButtons);
+    }
 
     setTimeout(function () {
         addPeopleFromPymkPage();
@@ -79,11 +119,11 @@ var strContains = function (string, substring) {
 };
 
 var isOnSearchPage = function () {
-    return strContains(location.href, "/vsearch/p");
+    return (strContains(location.href, "linkedin.com/vsearch/p") || strContains(location.href, "linkedin.com/search/results/people"));
 };
 
 var isOnPymkPage = function () {
-    return strContains(location.href, "/people/pymk");
+    return (strContains(location.href, "linkedin.com/people/pymk") || strContains(location.href, "linkedin.com/mynetwork"));
 };
 
 var arrayContains = function (needle, haystack) {
