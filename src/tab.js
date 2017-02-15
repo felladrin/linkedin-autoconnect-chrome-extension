@@ -18,20 +18,46 @@ var addPeopleFromSearchPage = function () {
         return;
     }
 
+    var delayBetweenClicks = 500;
+
     var alreadyInvited = 0;
 
-    document.querySelectorAll('.primary-action-button').forEach(function (item) {
-        if (!arrayContains(extractProfileId(item.getAttribute("href")), buttonsClicked)) {
+    var buttonsFromOldInterface = document.querySelectorAll('.primary-action-button');
+
+    var buttonsFromNewInterface = document.querySelectorAll('button.search-result__actions--primary.m5:enabled');
+
+    if (buttonsFromOldInterface.length > 0) {
+        buttonsFromOldInterface.forEach(function (item) {
+            if (!arrayContains(extractProfileId(item.getAttribute("href")), buttonsClicked)) {
+                setTimeout(function () {
+                    if (running) {
+                        item.focus();
+                        item.click();
+                        buttonsClicked.push(extractProfileId(item.getAttribute("href")));
+                        sessionStorage.setItem('buttonsClicked', JSON.stringify(buttonsClicked));
+                    }
+                }, alreadyInvited++ * delayBetweenClicks);
+            }
+        });
+    } else if (buttonsFromNewInterface.length > 0) {
+        delayBetweenClicks = 1500;
+        buttonsFromNewInterface.forEach(function (item) {
             setTimeout(function () {
                 if (running) {
+                    var buttonSendNow = document.querySelector('button.button-primary-large.ml3');
+                    if (buttonSendNow) {
+                        buttonSendNow.click();
+                    }
                     item.focus();
                     item.click();
-                    buttonsClicked.push(extractProfileId(item.getAttribute("href")));
-                    sessionStorage.setItem('buttonsClicked', JSON.stringify(buttonsClicked));
+                    buttonSendNow = document.querySelector('button.button-primary-large.ml3');
+                    if (buttonSendNow) {
+                        buttonSendNow.click();
+                    }
                 }
-            }, alreadyInvited++ * 500);
-        }
-    });
+            }, alreadyInvited++ * delayBetweenClicks);
+        });
+    }
 
     setTimeout(function () {
         if (!running) {
@@ -46,9 +72,15 @@ var addPeopleFromSearchPage = function () {
         if (connectButtonsLeft) {
             addPeopleFromSearchPage();
         } else {
-            document.querySelector('.next > a').click();
+            var nextButtonFromOldInterface = document.querySelector('.next > a');
+            var nextButtonFromNewInterface = document.querySelector('button.next');
+            if (nextButtonFromOldInterface) {
+                nextButtonFromOldInterface.click();
+            } else if (nextButtonFromNewInterface) {
+                nextButtonFromNewInterface.click();
+            }
         }
-    }, 6000);
+    }, alreadyInvited * delayBetweenClicks  + 1000);
 };
 
 var addPeopleFromPymkPage = function () {
@@ -73,9 +105,7 @@ var addPeopleFromPymkPage = function () {
 
     if (buttonsFromOldInterface.length > 0) {
         buttonsFromOldInterface.forEach(functionToBeCalledOnButtons);
-    }
-
-    if (buttonsFromNewInterface.length > 0) {
+    } else if (buttonsFromNewInterface.length > 0) {
         buttonsFromNewInterface.forEach(functionToBeCalledOnButtons);
     }
 
