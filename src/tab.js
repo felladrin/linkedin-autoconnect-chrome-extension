@@ -21,7 +21,7 @@ var addPeopleFromSearchPage = function () {
     var alreadyInvited = 0;
 
     document.querySelectorAll('.primary-action-button').forEach(function (item) {
-        if (item.innerHTML == 'Connect' && !arrayContains(extractProfileId(item.getAttribute("href")), buttonsClicked)) {
+        if (!arrayContains(extractProfileId(item.getAttribute("href")), buttonsClicked)) {
             setTimeout(function () {
                 if (running) {
                     item.focus();
@@ -39,7 +39,7 @@ var addPeopleFromSearchPage = function () {
         }
         var connectButtonsLeft = false;
         document.querySelectorAll('.primary-action-button').forEach(function (item) {
-            if (item.innerHTML == 'Connect' && !arrayContains(extractProfileId(item.getAttribute("href")), buttonsClicked)) {
+            if (!arrayContains(extractProfileId(item.getAttribute("href")), buttonsClicked)) {
                 connectButtonsLeft = true;
             }
         });
@@ -58,16 +58,26 @@ var addPeopleFromPymkPage = function () {
 
     var alreadyInvited = 0;
 
-    document.querySelectorAll('.bt-request-buffed').forEach(function (item) {
-        if (strContains(item.innerHTML, 'Connect')) {
-            setTimeout(function () {
-                if (running) {
-                    item.focus();
-                    item.click();
-                }
-            }, alreadyInvited++ * 1000);
-        }
-    });
+    var buttonsFromOldInterface = document.querySelectorAll('.bt-request-buffed');
+
+    var buttonsFromNewInterface = document.querySelectorAll('button.mn-person-card__person-btn-ext');
+
+    var functionToBeCalledOnButtons = function (item) {
+        setTimeout(function () {
+            if (running) {
+                item.focus();
+                item.click();
+            }
+        }, alreadyInvited++ * 1000);
+    };
+
+    if (buttonsFromOldInterface.length > 0) {
+        buttonsFromOldInterface.forEach(functionToBeCalledOnButtons);
+    }
+
+    if (buttonsFromNewInterface.length > 0) {
+        buttonsFromNewInterface.forEach(functionToBeCalledOnButtons);
+    }
 
     setTimeout(function () {
         addPeopleFromPymkPage();
@@ -79,11 +89,11 @@ var strContains = function (string, substring) {
 };
 
 var isOnSearchPage = function () {
-    return strContains(location.href, "/vsearch/p");
+    return (strContains(location.href, "linkedin.com/vsearch/p") || strContains(location.href, "linkedin.com/search/results/people"));
 };
 
 var isOnPymkPage = function () {
-    return strContains(location.href, "/people/pymk");
+    return (strContains(location.href, "linkedin.com/people/pymk") || strContains(location.href, "linkedin.com/mynetwork"));
 };
 
 var arrayContains = function (needle, haystack) {
