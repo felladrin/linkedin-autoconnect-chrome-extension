@@ -50,6 +50,7 @@ var addPeopleFromSearchPage = function () {
                     }
                     item.focus();
                     item.click();
+                    item.disabled = true;
                     buttonSendNow = document.querySelector('button.button-primary-large.ml3');
                     if (buttonSendNow) {
                         buttonSendNow.click();
@@ -63,12 +64,19 @@ var addPeopleFromSearchPage = function () {
         if (!running) {
             return;
         }
+
         var connectButtonsLeft = false;
+
         document.querySelectorAll('.primary-action-button').forEach(function (item) {
             if (!arrayContains(extractProfileId(item.getAttribute("href")), buttonsClicked)) {
                 connectButtonsLeft = true;
             }
         });
+
+        if (document.querySelectorAll('button.search-result__actions--primary.m5:enabled').length > 0) {
+            connectButtonsLeft = true;
+        }
+
         if (connectButtonsLeft) {
             addPeopleFromSearchPage();
         } else {
@@ -80,7 +88,7 @@ var addPeopleFromSearchPage = function () {
                 nextButtonFromNewInterface.click();
             }
         }
-    }, alreadyInvited * delayBetweenClicks  + 1000);
+    }, alreadyInvited * delayBetweenClicks + 1000);
 };
 
 var addPeopleFromPymkPage = function () {
@@ -146,4 +154,6 @@ var checkIfUrlHasChanged = function () {
     }
 };
 
-setInterval(checkIfUrlHasChanged, 1000);
+if (typeof loop == 'undefined') {
+    var loop = setInterval(checkIfUrlHasChanged, 1000);
+}
