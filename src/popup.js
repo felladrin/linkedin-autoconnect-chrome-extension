@@ -69,10 +69,10 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             locationInfo.innerHTML = '<p>Select one of the following<br/>LinkedIn Pages to open:</p><p><button id="openLinkedInSearchPage"><span>Search People</span></button></p><p><button id="openLinkedInPymkPage"><span>People You May Know</span></button></p>';
             document.getElementById('openLinkedInSearchPage').addEventListener('click', function () {
-                openUrlOnCurrentTab('https://www.linkedin.com/search/results/people/?facetNetwork=%5B"S"%5D');
+                openUrlOnCurrentTab('https://www.linkedin.com/vsearch/p/');
             });
             document.getElementById('openLinkedInPymkPage').addEventListener('click', function () {
-                openUrlOnCurrentTab('https://www.linkedin.com/mynetwork/');
+                openUrlOnCurrentTab('https://www.linkedin.com/people/pymk/');
             });
         }
 
