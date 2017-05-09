@@ -4,9 +4,11 @@ This extensions is for every LinkedIn user who is tired of manually clicking to 
 
 Install this extension, go to "People You May Know" or "Search People" page on LinkedIn, click "Start" and watch the computer clicking on every "Connect" button then going to the next page and repeating the process until you click "Stop".
 
-## Available at Chrome Web Store
+## Chrome Web Store
 
-LinkedIn AutoConnect: <https://chrome.google.com/webstore/detail/linkedin-autoconnect/jnpbfhigciimemdiiicffgcakpbidbgh>
+~~LinkedIn AutoConnect: <https://chrome.google.com/webstore/detail/linkedin-autoconnect/jnpbfhigciimemdiiicffgcakpbidbgh>~~
+
+Unfortunately it has been taken down from Chrome Web Store by LinkedIn.
 
 ## Screenshots
 
