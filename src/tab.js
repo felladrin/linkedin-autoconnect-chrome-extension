@@ -50,7 +50,7 @@ var addPeopleFromSearchPage = function () {
                     }
                     item.focus();
                     item.click();
-                    item.disabled = true;
+                    item.setAttribute("disabled", "true");
                     buttonSendNow = document.querySelector('button.button-primary-large.ml3');
                     if (buttonSendNow) {
                         buttonSendNow.click();
@@ -100,7 +100,7 @@ var addPeopleFromPymkPage = function () {
 
     var buttonsFromOldInterface = document.querySelectorAll('.bt-request-buffed');
 
-    var buttonsFromNewInterface = document.querySelectorAll('button.mn-person-card__person-btn-ext');
+    var buttonsFromNewInterface = document.querySelectorAll('button.button-secondary-small[data-control-name="invite"]');
 
     var functionToBeCalledOnButtons = function (item) {
         setTimeout(function () {
@@ -154,6 +154,6 @@ var checkIfUrlHasChanged = function () {
     }
 };
 
-if (typeof loop == 'undefined') {
+if (typeof loop === 'undefined') {
     var loop = setInterval(checkIfUrlHasChanged, 1000);
 }

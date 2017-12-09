@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         var onTabUpdated = function (tabId, changeInfo, tab) {
-            if (changeInfo.status == "loading") {
+            if (changeInfo.status === "loading") {
                 onTabInfoIsLoaded(tab);
                 if (strContains(tab.url, "linkedin.com/people/contacts-search-invite-submit-reconnect")
                     || strContains(tab.url, "linkedin.com/people/invite")) {
@@ -69,10 +69,10 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             locationInfo.innerHTML = '<p>Select one of the following<br/>LinkedIn Pages to open:</p><p><button id="openLinkedInSearchPage"><span>Search People</span></button></p><p><button id="openLinkedInPymkPage"><span>People You May Know</span></button></p>';
             document.getElementById('openLinkedInSearchPage').addEventListener('click', function () {
-                openUrlOnCurrentTab('https://www.linkedin.com/vsearch/p/');
+                openUrlOnCurrentTab('https://www.linkedin.com/search/results/people/');
             });
             document.getElementById('openLinkedInPymkPage').addEventListener('click', function () {
-                openUrlOnCurrentTab('https://www.linkedin.com/people/pymk/');
+                openUrlOnCurrentTab('https://www.linkedin.com/mynetwork/');
             });
         }
 
