@@ -14,12 +14,12 @@ Unfortunately it has been taken down from Chrome Web Store by LinkedIn.
 
 You can still run this extension manually. It's pretty simple to get it working:
 
-1. Download the [latest release of LinkedIn AutoConnect](https://github.com/felladrin/linkedin-autoconnect-chrome-extension/releases) and unzip it somewhere on your computer.
+1. Download the [latest release of LinkedIn AutoConnect](https://github.com/felladrin/linkedin-autoconnect-chrome-extension/releases) and unzip it.
 2. Open Google Chrome, type `chrome://extensions` on your address bar and hit Enter.
 3. On the Chrome Extensions page, check the `Developer mode` box. New buttons will be displayed.
 4. Click on the button `Load unpacked extension...`.
 5. Navigate to the folder where you unzipped the extension, select the `src` folder and click 'Open'.
-6. Then the extension shows up loaded and enabled, so you can use it by clicking its icon on the upper-right corner of Chrome.
+6. The extension should now be loaded and enabled, so you can use it by clicking the LinkedIn AutoConnect icon.
 
 ## Screenshots
 
