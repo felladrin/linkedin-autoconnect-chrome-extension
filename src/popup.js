@@ -65,9 +65,11 @@ document.addEventListener('DOMContentLoaded', function () {
         if (isOnSearchPage()) {
             locationInfo.innerHTML = "You're on 'Search People' page!";
         } else if (isOnPymkPage()) {
-            locationInfo.innerHTML = "You're on 'People You May Know' page! Scroll down the page to load more contacts when needed.";
+            locationInfo.innerHTML = "You're on 'People You May Know' page!";
         } else {
-            locationInfo.innerHTML = '<p>Select one of the following<br/>LinkedIn Pages to open:</p><p><button id="openLinkedInSearchPage"><span>Search People</span></button></p><p><button id="openLinkedInPymkPage"><span>People You May Know</span></button></p>';
+            locationInfo.innerHTML = '<p>Select one of the following<br/>LinkedIn Pages to open:</p>' +
+                '<div><button id="openLinkedInSearchPage"><span>Search<br/>People</span></button></div>' +
+                '<div><button id="openLinkedInPymkPage"><span>People You<br/>May Know</span></button></div>';
             document.getElementById('openLinkedInSearchPage').addEventListener('click', function () {
                 openUrlOnCurrentTab('https://www.linkedin.com/search/results/people/');
             });

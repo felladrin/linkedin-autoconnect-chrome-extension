@@ -107,6 +107,7 @@ var addPeopleFromPymkPage = function () {
             if (running) {
                 item.focus();
                 item.click();
+                window.scrollBy(0, window.innerHeight);
             }
         }, alreadyInvited++ * 1000);
     };
