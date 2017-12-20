@@ -1,78 +1,81 @@
 <!doctype html>
 <html>
 <head>
-  <title>LinkedIn AutoConnect</title>
-  <script src="popup.js"></script>
-  <style>
-    body {
-      width: 200px;
-      text-align: center;
-    }
+    <title>LinkedIn AutoConnect</title>
+    <script src="popup.js"></script>
+    <style>
+        body {
+            width: 200px;
+            text-align: center;
+        }
 
-    button {
-      display: inline-block;
-      border-radius: 4px;
-      border: none;
-      color: #FFFFFF;
-      text-align: center;
-      font-size: 22px;
-      padding: 20px;
-      width: 180px;
-      transition: all 0.5s;
-      cursor: pointer;
-      margin: auto;
-    }
+        button {
+            border-radius: 4px;
+            border: none;
+            color: #FFFFFF;
+            text-align: center;
+            font-size: 22px;
+            padding: 20px;
+            width: 100%;
+            transition: all 0.5s;
+            cursor: pointer;
+            margin: auto;
+        }
 
-    button span {
-      cursor: pointer;
-      display: inline-block;
-      position: relative;
-      transition: 0.5s;
-    }
+        button span {
+            cursor: pointer;
+            display: inline-block;
+            position: relative;
+            transition: 0.5s;
+        }
 
-    button span:after {
-      content: '\00bb';
-      position: absolute;
-      opacity: 0;
-      top: 0;
-      right: -20px;
-      transition: 0.5s;
-    }
+        button span:after {
+            content: '\00bb';
+            position: absolute;
+            opacity: 0;
+            top: 0;
+            right: -20px;
+            transition: 0.5s;
+        }
 
-    button:hover {
-      box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
-    }
+        button:hover {
+            box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+        }
 
-    button:hover span {
-      padding-right: 25px;
-    }
+        button:hover span {
+            padding-right: 25px;
+        }
 
-    button:hover span:after {
-      opacity: 1;
-      right: 0;
-    }
+        button:hover span:after {
+            opacity: 1;
+            right: 0;
+        }
 
-    #startButton {
-      background-color: #4CAF50;
-    }
+        #startButton {
+            background-color: #4CAF50;
+        }
 
-    #stopButton {
-      background-color: #f4511e;
-    }
+        #stopButton {
+            background-color: #f4511e;
+        }
 
-    #openLinkedInSearchPage {
-      background-color: #0089ba;
-    }
+        #openLinkedInSearchPage {
+            background-color: #0089ba;
+            display: block;
+            margin: 5px 0;
+        }
 
-    #openLinkedInPymkPage {
-      background-color: #684caf;
-    }
-  </style>
+        #openLinkedInPymkPage {
+            background-color: #684caf;
+            display: block;
+            margin: 5px 0;
+        }
+    </style>
 </head>
 <body>
-  <strong>LinkedIn AutoConnect</strong>
-  <p id="locationInfo"></p>
-  <button id="startButton"><span>START</span></button>
-  <button id="stopButton"><span>STOP</span></button>
+    <strong>LinkedIn AutoConnect</strong>
+    <p id="locationInfo"></p>
+    <button id="startButton"><span>START</span></button>
+    <button id="stopButton"><span>STOP</span></button>
 </body>
 </html>
