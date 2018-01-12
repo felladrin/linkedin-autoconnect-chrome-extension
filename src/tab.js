@@ -26,6 +26,13 @@ var addPeopleFromSearchPage = function () {
 
     var buttonsFromNewInterface = document.querySelectorAll('button.search-result__actions--primary.m5:enabled');
 
+    var clickSendNowButtonIfAvailable = function () {
+        var buttonSendNow = document.querySelector('div.send-invite__actions > button.button-primary-large.ml1');
+        if (buttonSendNow) {
+            buttonSendNow.click();
+        }
+    };
+
     if (buttonsFromOldInterface.length > 0) {
         buttonsFromOldInterface.forEach(function (item) {
             if (!arrayContains(extractProfileId(item.getAttribute("href")), buttonsClicked)) {
@@ -44,17 +51,12 @@ var addPeopleFromSearchPage = function () {
         buttonsFromNewInterface.forEach(function (item) {
             setTimeout(function () {
                 if (running) {
-                    var buttonSendNow = document.querySelector('button.button-primary-large.ml3');
-                    if (buttonSendNow) {
-                        buttonSendNow.click();
-                    }
+                    clickSendNowButtonIfAvailable();
                     item.focus();
                     item.click();
                     item.setAttribute("disabled", "true");
-                    buttonSendNow = document.querySelector('button.button-primary-large.ml3');
-                    if (buttonSendNow) {
-                        buttonSendNow.click();
-                    }
+                    item['innerText'] = "Invite Sent";
+                    clickSendNowButtonIfAvailable();
                 }
             }, alreadyInvited++ * delayBetweenClicks);
         });
@@ -96,6 +98,8 @@ var addPeopleFromPymkPage = function () {
         return;
     }
 
+    var delayBetweenClicks = 2000;
+
     var alreadyInvited = 0;
 
     var buttonsFromOldInterface = document.querySelectorAll('.bt-request-buffed');
@@ -107,9 +111,9 @@ var addPeopleFromPymkPage = function () {
             if (running) {
                 item.focus();
                 item.click();
-                window.scrollBy(0, window.innerHeight);
+                window.scrollBy(0, 100);
             }
-        }, alreadyInvited++ * 1000);
+        }, alreadyInvited++ * delayBetweenClicks);
     };
 
     if (buttonsFromOldInterface.length > 0) {
@@ -120,7 +124,7 @@ var addPeopleFromPymkPage = function () {
 
     setTimeout(function () {
         addPeopleFromPymkPage();
-    }, alreadyInvited * 1000 + 1000);
+    }, alreadyInvited * delayBetweenClicks + 1000);
 };
 
 var strContains = function (string, substring) {
