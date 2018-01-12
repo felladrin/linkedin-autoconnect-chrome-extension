@@ -1,4 +1,4 @@
-# LinkedIn AutoConnect - Chrome Extension
+# LinkedIn AutoConnect - Chrome Extension [![Help Contribute to Open Source](https://www.codetriage.com/felladrin/linkedin-autoconnect-chrome-extension/badges/users.svg)](https://www.codetriage.com/felladrin/linkedin-autoconnect-chrome-extension)
 
 This extensions is for every LinkedIn user who is tired of manually clicking to 'Connect' all those recruiters from their dream company. Or those who are willing to add everyone from their college course.
 
