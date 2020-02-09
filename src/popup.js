@@ -1,35 +1,33 @@
-document.addEventListener("DOMContentLoaded", function() {
-  var onTabInfoIsLoaded = function(tab) {
-    var startButton = document.getElementById("startButton");
-    var stopButton = document.getElementById("stopButton");
-    var locationInfo = document.getElementById("locationInfo");
+document.addEventListener("DOMContentLoaded", () => {
+  const onTabInfoIsLoaded = ({ url }) => {
+    const startButton = document.getElementById("startButton");
+    const stopButton = document.getElementById("stopButton");
+    const locationInfo = document.getElementById("locationInfo");
 
-    var strContains = function(string, substring) {
+    const strContains = (string, substring) => {
       if (!string || !substring) return false;
 
-      return string.indexOf(substring) !== -1;
+      return string.includes(substring);
     };
 
-    var isOnSearchPage = function() {
-      return strContains(tab.url, "linkedin.com/search/results/people");
+    const isOnSearchPage = () =>
+      strContains(url, "linkedin.com/search/results/people");
+
+    const isOnRecommendedForYouPage = () =>
+      strContains(url, "linkedin.com/mynetwork");
+
+    const openUrlOnCurrentTab = url => {
+      chrome.tabs.update({ url }, onTabInfoIsLoaded);
     };
 
-    var isOnRecommendedForYouPage = function() {
-      return strContains(tab.url, "linkedin.com/mynetwork");
-    };
-
-    var openUrlOnCurrentTab = function(url) {
-      chrome.tabs.update({ url: url }, onTabInfoIsLoaded);
-    };
-
-    var executeScriptOnCurrentTab = function() {
+    const executeScriptOnCurrentTab = () => {
       chrome.tabs.executeScript({
         file: "tab.js"
       });
     };
 
-    var onTabUpdated = function(tabId, changeInfo, tab) {
-      if (changeInfo.status === "loading") {
+    const onTabUpdated = (tabId, { status }, tab) => {
+      if (status === "loading") {
         onTabInfoIsLoaded(tab);
         if (isOnSearchPage() || isOnRecommendedForYouPage()) {
           executeScriptOnCurrentTab();
@@ -39,14 +37,14 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     };
 
-    var onClickStartButton = function() {
+    const onClickStartButton = () => {
       startButton.style.display = "none";
       stopButton.style.display = "block";
       executeScriptOnCurrentTab();
       chrome.tabs.onUpdated.addListener(onTabUpdated);
     };
 
-    var onClickStopButton = function() {
+    const onClickStopButton = () => {
       startButton.style.display = "block";
       stopButton.style.display = "none";
       chrome.tabs.onUpdated.removeListener(onTabUpdated);
@@ -62,21 +60,20 @@ document.addEventListener("DOMContentLoaded", function() {
       locationInfo.innerHTML = "You're on 'Recommended For You' page!";
       startButton.style.display = "block";
     } else {
-      locationInfo.innerHTML =
-        "<p>Select one of the following<br/>LinkedIn Pages to open:</p>" +
-        '<div><button id="openLinkedInSearchPage"><span>Search<br/>People</span></button></div>' +
-        '<div><button id="openLinkedInRecommendedForYouPage"><span>Recommended For You</span></button></div>';
+      locationInfo.innerHTML = `<p>Select one of the following<br/>LinkedIn Pages to open:</p>
+        <div><button id="openLinkedInSearchPage"><span>Search<br/>People</span></button></div>
+        <div><button id="openLinkedInRecommendedForYouPage"><span>Recommended For You</span></button></div>`;
       startButton.style.display = "none";
       document
         .getElementById("openLinkedInSearchPage")
-        .addEventListener("click", function() {
+        .addEventListener("click", () => {
           openUrlOnCurrentTab(
             'https://www.linkedin.com/search/results/people/?facetNetwork=%5B"S"%5D'
           );
         });
       document
         .getElementById("openLinkedInRecommendedForYouPage")
-        .addEventListener("click", function() {
+        .addEventListener("click", () => {
           openUrlOnCurrentTab("https://www.linkedin.com/mynetwork/");
         });
     }
