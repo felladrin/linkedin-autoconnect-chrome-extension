@@ -1,32 +1,33 @@
-var running = true;
-var lastLocation = null;
+let running = true;
+let lastLocation = null;
 
 if (!sessionStorage.getItem("buttonsClicked")) {
   sessionStorage.setItem("buttonsClicked", JSON.stringify([]));
 }
 
-var buttonsClicked = JSON.parse(sessionStorage.getItem("buttonsClicked"));
+const buttonsClicked = JSON.parse(sessionStorage.getItem("buttonsClicked"));
 
-var extractProfileId = function(string) {
-  var expression = /key=(\d*)/g;
-  var matches = expression.exec(string);
+const extractProfileId = string => {
+  const expression = /key=(\d*)/g;
+  const matches = expression.exec(string);
   return matches[1];
 };
 
-var addPeopleFromSearchPage = function() {
+const arrayContains = (needle, haystack) => haystack.includes(needle);
+
+const addPeopleFromSearchPage = () => {
   if (!running) return;
 
-  var delayBetweenClicks = 500;
+  let delayBetweenClicks = 500;
+  let alreadyInvited = 0;
 
-  var alreadyInvited = 0;
-
-  var buttonSelector =
+  const buttonSelector =
     "button.search-result__action-button.search-result__actions--primary:enabled";
 
-  var buttons = document.querySelectorAll(buttonSelector);
+  const buttons = document.querySelectorAll(buttonSelector);
 
-  var clickSendNowButtonIfAvailable = function() {
-    var buttonSendNow = document.querySelector(
+  const clickSendNowButtonIfAvailable = () => {
+    const buttonSendNow = document.querySelector(
       "button.ml1.artdeco-button.artdeco-button--3.artdeco-button--primary"
     );
 
@@ -37,8 +38,9 @@ var addPeopleFromSearchPage = function() {
 
   if (buttons.length > 0) {
     delayBetweenClicks = 1500;
-    buttons.forEach(function(item) {
-      setTimeout(function() {
+
+    buttons.forEach(item => {
+      setTimeout(() => {
         if (running) {
           clickSendNowButtonIfAvailable();
           item.focus();
@@ -52,12 +54,10 @@ var addPeopleFromSearchPage = function() {
     });
   }
 
-  setTimeout(function() {
+  setTimeout(() => {
     if (!running) return;
-
-    var connectButtonsLeft = false;
-
-    document.querySelectorAll(".primary-action-button").forEach(function(item) {
+    let connectButtonsLeft = false;
+    document.querySelectorAll(".primary-action-button").forEach(item => {
       if (
         !arrayContains(
           extractProfileId(item.getAttribute("href")),
@@ -67,36 +67,32 @@ var addPeopleFromSearchPage = function() {
         connectButtonsLeft = true;
       }
     });
-
     if (document.querySelectorAll(buttonSelector).length > 0) {
       connectButtonsLeft = true;
     }
-
     if (connectButtonsLeft) {
       addPeopleFromSearchPage();
     } else {
-      var nextButton = document.querySelector(
+      const nextButton = document.querySelector(
         "artdeco-pagination > button.artdeco-pagination__button--next"
       );
-
       if (nextButton) nextButton.click();
     }
   }, alreadyInvited * delayBetweenClicks + 1000);
 };
 
-var addPeopleFromRecommendedForYouPage = function() {
+const addPeopleFromRecommendedForYouPage = () => {
   if (!running) return;
 
-  var delayBetweenClicks = 2000;
+  const delayBetweenClicks = 2000;
+  let alreadyInvited = 0;
 
-  var alreadyInvited = 0;
-
-  var buttons = document.querySelectorAll(
+  const buttons = document.querySelectorAll(
     'footer > button[data-control-name="invite"]'
   );
 
-  var functionToBeCalledOnButtons = function(item) {
-    setTimeout(function() {
+  const functionToBeCalledOnButtons = item => {
+    setTimeout(() => {
       if (running) {
         item.focus();
         item.click();
@@ -111,28 +107,20 @@ var addPeopleFromRecommendedForYouPage = function() {
     buttons.forEach(functionToBeCalledOnButtons);
   }
 
-  setTimeout(function() {
+  setTimeout(() => {
     addPeopleFromRecommendedForYouPage();
   }, alreadyInvited * delayBetweenClicks + 1000);
 };
 
-var strContains = function(string, substring) {
-  return string.indexOf(substring) !== -1;
-};
+const strContains = (string, substring) => string.includes(substring);
 
-var isOnSearchPage = function() {
-  return strContains(location.href, "linkedin.com/search/results/people");
-};
+const isOnSearchPage = () =>
+  strContains(location.href, "linkedin.com/search/results/people");
 
-var isOnRecommendedForYouPage = function() {
-  return strContains(location.href, "linkedin.com/mynetwork");
-};
+const isOnRecommendedForYouPage = () =>
+  strContains(location.href, "linkedin.com/mynetwork");
 
-var arrayContains = function(needle, haystack) {
-  return haystack.indexOf(needle) > -1;
-};
-
-var checkIfUrlHasChanged = function() {
+const checkIfUrlHasChanged = () => {
   if (!running || location.href === lastLocation) return;
 
   lastLocation = location.href;
