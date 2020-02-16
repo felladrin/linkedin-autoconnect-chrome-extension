@@ -1,0 +1,22 @@
+{
+  "name": "linkedin-autoconnect-chrome-extension",
+  "version": "1.0.0",
+  "description": "Automatically clicks all 'Connect' buttons available on LinkedIn 'Search People' and 'Recommended For You' pages.",
+  "main": "index.js",
+  "private": true,
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felladrin/linkedin-autoconnect-chrome-extension.git"
+  },
+  "keywords": [],
+  "author": "Victor Nogueira <victor@victornogueira.app>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/felladrin/linkedin-autoconnect-chrome-extension/issues"
+  },
+  "homepage": "https://github.com/felladrin/linkedin-autoconnect-chrome-extension#readme",
+  "devDependencies": {
+    "@types/chrome": "0.0.95"
+  }
+}
