@@ -1,90 +1,101 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const onTabInfoIsLoaded = ({ url }) => {
-    const startButton = document.getElementById("startButton");
-    const stopButton = document.getElementById("stopButton");
-    const locationInfo = document.getElementById("locationInfo");
+const startButton = document.getElementById("startButton");
+const stopButton = document.getElementById("stopButton");
+const searchPeopleMessage = document.getElementById("searchPeopleMessage");
+const recommendedForYouMessage = document.getElementById("recommendedForYouMessage");
+const selectOptionMessage = document.getElementById("selectOptionMessage");
+const openLinkedInSearchPage = document.getElementById("openLinkedInSearchPage");
+const openLinkedInRecommendedForYouPage = document.getElementById("openLinkedInRecommendedForYouPage");
+const classHidden = "hidden";
+const linkedInUrl = {
+  searchPeoplePage: 'https://www.linkedin.com/search/results/people/?facetNetwork=%5B"S"%5D',
+  myNetworkPage: "https://www.linkedin.com/mynetwork/",
+  patternOfSearchPage: "linkedin.com/search/results/people",
+  patternOfMyNetworkPage: "linkedin.com/mynetwork"
+};
 
-    const strContains = (string, substring) => {
-      if (!string || !substring) return false;
+function showStartButtonAndHideStopButton() {
+  startButton.classList.remove(classHidden);
+  stopButton.classList.add(classHidden);
+};
 
-      return string.includes(substring);
-    };
+function showStopButtonAndHideStartButton() {
+  stopButton.classList.remove(classHidden);
+  startButton.classList.add(classHidden);
+};
 
-    const isOnSearchPage = () =>
-      strContains(url, "linkedin.com/search/results/people");
+function hideStartAndStopButtons() {
+  startButton.classList.add(classHidden);
+  stopButton.classList.add(classHidden);
+};
 
-    const isOnRecommendedForYouPage = () =>
-      strContains(url, "linkedin.com/mynetwork");
+function hideAllMessages() {
+  searchPeopleMessage.classList.add(classHidden);
+  recommendedForYouMessage.classList.add(classHidden);
+  selectOptionMessage.classList.add(classHidden);
+};
 
-    const openUrlOnCurrentTab = url => {
-      chrome.tabs.update({ url }, onTabInfoIsLoaded);
-    };
+function showSearchPeopleMessage() {
+  searchPeopleMessage.classList.remove(classHidden);
+};
 
-    const executeScriptOnCurrentTab = () => {
-      chrome.tabs.executeScript({
-        file: "tab.js"
-      });
-    };
+function showRecommendedForYouMessage() {
+  recommendedForYouMessage.classList.remove(classHidden);
+};
 
-    const onTabUpdated = (tabId, { status }, tab) => {
-      if (status === "loading") {
-        onTabInfoIsLoaded(tab);
-        if (isOnSearchPage() || isOnRecommendedForYouPage()) {
-          executeScriptOnCurrentTab();
-          startButton.style.display = "none";
-          stopButton.style.display = "block";
-        }
-      }
-    };
+function showSelectOptionMessage() {
+  selectOptionMessage.classList.remove(classHidden);
+};
 
-    const onClickStartButton = () => {
-      startButton.style.display = "none";
-      stopButton.style.display = "block";
-      executeScriptOnCurrentTab();
-      chrome.tabs.onUpdated.addListener(onTabUpdated);
-    };
+function executeScriptOnCurrentTab() {
+  chrome.tabs.executeScript({ file: "tab.js" });
+};
 
-    const onClickStopButton = () => {
-      startButton.style.display = "block";
-      stopButton.style.display = "none";
-      chrome.tabs.onUpdated.removeListener(onTabUpdated);
-      chrome.tabs.executeScript({
-        code: "running = false"
-      });
-    };
+function stopScriptExecutionOnCurrentTab() {
+  chrome.tabs.executeScript({ code: "running = false" });
+};
 
-    if (isOnSearchPage()) {
-      locationInfo.innerHTML = "You're on 'Search People' page!";
-      startButton.style.display = "block";
-    } else if (isOnRecommendedForYouPage()) {
-      locationInfo.innerHTML = "You're on 'Recommended For You' page!";
-      startButton.style.display = "block";
-    } else {
-      locationInfo.innerHTML = `<p>Select one of the following<br/>LinkedIn Pages to open:</p>
-        <div><button id="openLinkedInSearchPage"><span>Search<br/>People</span></button></div>
-        <div><button id="openLinkedInRecommendedForYouPage"><span>Recommended For You</span></button></div>`;
-      startButton.style.display = "none";
-      document
-        .getElementById("openLinkedInSearchPage")
-        .addEventListener("click", () => {
-          openUrlOnCurrentTab(
-            'https://www.linkedin.com/search/results/people/?facetNetwork=%5B"S"%5D'
-          );
-        });
-      document
-        .getElementById("openLinkedInRecommendedForYouPage")
-        .addEventListener("click", () => {
-          openUrlOnCurrentTab("https://www.linkedin.com/mynetwork/");
-        });
-    }
-
-    stopButton.style.display = "none";
-    startButton.addEventListener("click", onClickStartButton);
-    stopButton.addEventListener("click", onClickStopButton);
-    chrome.tabs.executeScript({
-      code: "running = false"
-    });
-  };
-
-  chrome.tabs.getSelected(onTabInfoIsLoaded);
+startButton.addEventListener("click", () => {
+  showStopButtonAndHideStartButton();
+  executeScriptOnCurrentTab();
 });
+
+stopButton.addEventListener("click", () => {
+  showStartButtonAndHideStopButton();
+  stopScriptExecutionOnCurrentTab();
+});
+
+openLinkedInSearchPage.addEventListener("click", () => {
+  chrome.tabs.update({ url: linkedInUrl.searchPeoplePage });
+});
+
+openLinkedInRecommendedForYouPage.addEventListener("click", () => {
+  chrome.tabs.update({ url: linkedInUrl.myNetworkPage });
+});
+
+chrome.tabs.query({ active: true }, function updatePopupContent([activeTab]) {
+  const isOnSearchPage = activeTab.url.includes(linkedInUrl.patternOfSearchPage);
+  const isOnRecommendedForYouPage = activeTab.url.includes(linkedInUrl.patternOfMyNetworkPage);
+
+  hideAllMessages();
+
+  if (isOnSearchPage) {
+    showSearchPeopleMessage();
+    showStartButtonAndHideStopButton();
+  } else if (isOnRecommendedForYouPage) {
+    showRecommendedForYouMessage();
+    showStartButtonAndHideStopButton();
+  } else {
+    showSelectOptionMessage();
+    hideStartAndStopButtons();
+  }
+
+  chrome.tabs.onUpdated.addListener(function handleTabUpdated({ }, { }, updatedTab) {
+    if (updatedTab.id !== activeTab.id) return;
+    updatePopupContent([updatedTab]);
+    chrome.tabs.onUpdated.removeListener(handleTabUpdated);
+  });
+});
+
+hideAllMessages();
+showStartButtonAndHideStopButton();
+stopScriptExecutionOnCurrentTab();
