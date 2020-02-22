@@ -1,9 +1,8 @@
 {
-  "name": "Node.js 12 & TypeScript",
+  "name": "LinkedIn AutoConnect",
   "dockerFile": "Dockerfile",
-  "settings": {
-    "terminal.integrated.shell.linux": "/bin/bash"
-  },
-  "extensions": ["dbaeumer.vscode-eslint"],
-  "remoteUser": "node"
+  "remoteUser": "developer",
+  "mounts": [
+    "source=linkedin-autoconnect-vscode-extensions,target=/home/developer/.vscode-server/extensions,type=volume"
+  ]
 }
