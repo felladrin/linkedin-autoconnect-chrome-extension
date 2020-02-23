@@ -21,6 +21,7 @@ RUN groupadd --gid 1000 ${REMOTE_USER} \
   ssh \
   git \
   curl \
+  net-tools \
   build-essential \
   ca-certificates \
   # Install Node.js
