@@ -1,8 +1,7 @@
 {
   "name": "LinkedIn AutoConnect",
   "dockerFile": "Dockerfile",
-  "remoteUser": "developer",
   "mounts": [
-    "source=linkedin-autoconnect-vscode-extensions,target=/home/developer/.vscode-server/extensions,type=volume"
+    "source=linkedin-autoconnect-vscode-extensions,target=/home/vscode/.vscode-server/extensions,type=volume"
   ]
 }
