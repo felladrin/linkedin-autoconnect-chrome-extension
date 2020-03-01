@@ -1,7 +1,0 @@
-{
-  "name": "LinkedIn AutoConnect",
-  "dockerFile": "Dockerfile",
-  "mounts": [
-    "source=linkedin-autoconnect-vscode-extensions,target=/home/vscode/.vscode-server/extensions,type=volume"
-  ]
-}
