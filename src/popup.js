@@ -46,22 +46,27 @@ function showSelectOptionMessage() {
   selectOptionMessage.classList.remove(classHidden);
 };
 
-function executeScriptOnCurrentTab() {
-  chrome.tabs.executeScript({ file: "tab.js" });
-};
-
-function stopScriptExecutionOnCurrentTab() {
-  chrome.tabs.executeScript({ code: "running = false" });
-};
-
 startButton.addEventListener("click", () => {
-  showStopButtonAndHideStartButton();
-  executeScriptOnCurrentTab();
+  chrome.tabs.query({ active: true }, ([activeTab]) => {
+    chrome.tabs.sendMessage(activeTab.id, "isAutoConnectAvailable", (response) => {
+      if (!response) {
+        chrome.tabs.executeScript({ file: "tab.js" }, () => {
+          chrome.tabs.sendMessage(activeTab.id, "startAutoConnect");
+          showStopButtonAndHideStartButton();
+        });
+      } else {
+        chrome.tabs.sendMessage(activeTab.id, "startAutoConnect");
+        showStopButtonAndHideStartButton();
+      }
+    });
+  });
 });
 
 stopButton.addEventListener("click", () => {
-  showStartButtonAndHideStopButton();
-  stopScriptExecutionOnCurrentTab();
+  chrome.tabs.query({ active: true }, ([activeTab]) => {
+    chrome.tabs.sendMessage(activeTab.id, "stopAutoConnect");
+    showStartButtonAndHideStopButton();
+  });
 });
 
 openLinkedInSearchPage.addEventListener("click", () => {
@@ -80,13 +85,21 @@ chrome.tabs.query({ active: true }, function updatePopupContent([activeTab]) {
 
   if (isOnSearchPage) {
     showSearchPeopleMessage();
-    showStartButtonAndHideStopButton();
   } else if (isOnRecommendedForYouPage) {
     showRecommendedForYouMessage();
-    showStartButtonAndHideStopButton();
   } else {
     showSelectOptionMessage();
     hideStartAndStopButtons();
+  }
+
+  if (isOnSearchPage || isOnRecommendedForYouPage) {
+    chrome.tabs.sendMessage(activeTab.id, "isAutoConnectRunning", (response) => {
+      if (!response) {
+        showStartButtonAndHideStopButton();
+      } else {
+        showStopButtonAndHideStartButton();
+      }
+    });
   }
 
   chrome.tabs.onUpdated.addListener(function handleTabUpdated({ }, { }, updatedTab) {
@@ -95,7 +108,3 @@ chrome.tabs.query({ active: true }, function updatePopupContent([activeTab]) {
     chrome.tabs.onUpdated.removeListener(handleTabUpdated);
   });
 });
-
-hideAllMessages();
-showStartButtonAndHideStopButton();
-stopScriptExecutionOnCurrentTab();
