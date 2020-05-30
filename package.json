@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/felladrin/linkedin-autoconnect-chrome-extension#readme",
   "devDependencies": {
-    "@types/chrome": "0.0.95"
+    "@types/chrome": "0.0.114"
   }
 }
