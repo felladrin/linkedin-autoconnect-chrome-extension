@@ -1,78 +1,49 @@
 (function() {
   let isAutoConnectRunning = false;
-  let autoConnectLastLocation = null;
+  let autoConnectLastLocation = "";
 
-  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    switch (message) {
-      case 'isAutoConnectAvailable':
-        sendResponse(true);
-        break;
-      case 'isAutoConnectRunning':
-        sendResponse(isAutoConnectRunning);
-        break;
-      case 'startAutoConnect':
-        isAutoConnectRunning = true;
-        sendResponse(isAutoConnectRunning);
-        break;
-      case 'stopAutoConnect':
-        isAutoConnectRunning = false;
-        autoConnectLastLocation = null
-        sendResponse(isAutoConnectRunning);
-        break;
-    }
-  });
-
-  if (!sessionStorage.getItem("buttonsClicked")) {
-    sessionStorage.setItem("buttonsClicked", JSON.stringify([]));
-  }
-  
-  const buttonsClicked = JSON.parse(sessionStorage.getItem("buttonsClicked"));
-  
-  function extractProfileId(string) {
-    const expression = /key=(\d*)/g;
-    const matches = expression.exec(string);
-    return matches[1];
+  const linkedInUrl = {
+    patternOfSearchPage: "linkedin.com/search/results/people",
+    patternOfMyNetworkPage: "linkedin.com/mynetwork"
+  };
+  const linkedInSelector = {
+    sendNowButton: "button.ml1.artdeco-button.artdeco-button--3.artdeco-button--primary",
+    cancelButton: 'button[aria-label="Dismiss"] > li-icon[type="cancel-icon"]',
+    nextButton: "button.artdeco-pagination__button--next",
+    connectButtonsFromRecommendedPage: 'footer > button[data-control-name="people_connect"]',
+    connectButtonsFromSearchPage: "button.search-result__action-button.search-result__actions--primary:enabled",
   };
   
   function clickSendNowButtonIfAvailable() {
-    const buttonSendNow = document.querySelector(
-      "button.ml1.artdeco-button.artdeco-button--3.artdeco-button--primary"
-    );
-  
-    if (buttonSendNow) buttonSendNow.click();
+    const sendNowButton = document.querySelector(linkedInSelector.sendNowButton);
+
+    if (sendNowButton) sendNowButton.click();
   };
   
   function dismissEmailRequiredDialog() {
-    const cancelButton = document.querySelector('button[aria-label="Dismiss"] > li-icon[type="cancel-icon"]');
+    const cancelButton = document.querySelector(linkedInSelector.cancelButton);
     
     if (cancelButton) cancelButton.click();
   }
   
   function goToNextPage() {
-    const nextButton = document.querySelector(
-      "button.artdeco-pagination__button--next"
-    );
+    const nextButton = document.querySelector(linkedInSelector.nextButton);
   
     if (nextButton) nextButton.click();
   }
   
   function addPeopleFromSearchPage() {
     if (!isAutoConnectRunning) return;
-  
-    let delayBetweenClicks = 500;
+
     let alreadyInvited = 0;
   
-    const buttonSelector =
-      "button.search-result__action-button.search-result__actions--primary:enabled";
-  
-    const buttons = document.querySelectorAll(buttonSelector);
+    const delayBetweenClicks = 1500;
+    const connectButtons = document.querySelectorAll(linkedInSelector.connectButtonsFromSearchPage);
   
     window.scrollTo(0, document.body.scrollHeight);
   
-    if (buttons.length > 0) {
-      delayBetweenClicks = 1500;
-  
-      for (const button of buttons) {
+    if (connectButtons.length > 0) {
+      for (const button of connectButtons) {
         setTimeout(() => {
           if (isAutoConnectRunning) {
             dismissEmailRequiredDialog();
@@ -85,24 +56,18 @@
             dismissEmailRequiredDialog();
             clickSendNowButtonIfAvailable();
           }
-        }, alreadyInvited++ * delayBetweenClicks);
+        }, alreadyInvited * delayBetweenClicks);
+
+        alreadyInvited++;
       }
     }
   
     setTimeout(() => {
       if (!isAutoConnectRunning) return;
+      
       let thereAreConnectButtonsLeft = false;
-      const primaryActionButtons = document.querySelectorAll(".primary-action-button");
   
-      for (const item of primaryActionButtons) {
-        if (
-          !buttonsClicked.includes(extractProfileId(item.getAttribute("href")))
-        ) {
-          thereAreConnectButtonsLeft = true;
-        }
-      }
-  
-      if (document.querySelectorAll(buttonSelector).length > 0) {
+      if (document.querySelectorAll(linkedInSelector.connectButtonsFromSearchPage).length > 0) {
         thereAreConnectButtonsLeft = true;
       }
   
@@ -120,14 +85,12 @@
     const delayBetweenClicks = 2000;
     let alreadyInvited = 0;
   
-    const buttons = document.querySelectorAll(
-      'footer > button[data-control-name="people_connect"]'
-    );
+    const connectButtons = document.querySelectorAll(linkedInSelector.connectButtonsFromRecommendedPage);
   
     window.scrollTo(0, document.body.scrollHeight);
   
-    if (buttons.length > 0) {
-      for (const item of buttons) {
+    if (connectButtons.length > 0) {
+      for (const item of connectButtons) {
         setTimeout(() => {
           if (isAutoConnectRunning) {
             item.focus();
@@ -144,11 +107,11 @@
   };
   
   function isOnSearchPage () {
-    return location.href.includes("linkedin.com/search/results/people");
+    return location.href.includes(linkedInUrl.patternOfSearchPage);
   }
   
   function isOnRecommendedForYouPage () {
-    return location.href.includes("linkedin.com/mynetwork");
+    return location.href.includes(linkedInUrl.patternOfMyNetworkPage);
   }
   
   function checkIfUrlHasChanged() {
@@ -166,4 +129,24 @@
   };
 
   setInterval(checkIfUrlHasChanged, 1000);
+
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    switch (message) {
+      case 'isAutoConnectAvailable':
+        sendResponse(true);
+        break;
+      case 'isAutoConnectRunning':
+        sendResponse(isAutoConnectRunning);
+        break;
+      case 'startAutoConnect':
+        isAutoConnectRunning = true;
+        sendResponse(isAutoConnectRunning);
+        break;
+      case 'stopAutoConnect':
+        isAutoConnectRunning = false;
+        autoConnectLastLocation = ""
+        sendResponse(isAutoConnectRunning);
+        break;
+    }
+  });
 })();
