@@ -55,7 +55,6 @@
             clickSendNowButtonIfAvailable();
             button.focus();
             button.click();
-            console.log("%c%s", "color: #731d6d", "!!!!button clicked!!");
             window.scrollBy(0, 200);
             clickSendNowButtonIfAvailable();
             dismissEmailRequiredDialog();
