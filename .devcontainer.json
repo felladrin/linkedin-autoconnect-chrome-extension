@@ -1,8 +1,0 @@
-{
-  "image": "node:lts-buster",
-  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
-  "workspaceFolder": "/workspace",
-  "mounts": [
-    "source=linkedin-autoconnect-chrome-extension-node-modules,target=/workspace/node_modules,type=volume"
-  ]
-}
