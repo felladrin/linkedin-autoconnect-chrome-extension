@@ -15,13 +15,13 @@ This extensions is for every LinkedIn user who is tired of manually clicking 'Co
 
 After installing, click the extension icon and select a page to go, click "Start" and watch your computer clicking on every "Connect" button it finds until you click "Stop".
 
-![LinkedIn AutoConnect Screenshot #1](screenshots/linkedin_autoconnect_screenshot_1.png)
+![LinkedIn AutoConnect Screenshot #1](.github/screenshots/linkedin_autoconnect_screenshot_1.png)
 
-![LinkedIn AutoConnect Screenshot #2](screenshots/linkedin_autoconnect_screenshot_2.png)
+![LinkedIn AutoConnect Screenshot #2](.github/screenshots/linkedin_autoconnect_screenshot_2.png)
 
 ## Connecting to specific people
 
 If you want, for example, to connect with all recruiters from a company, click on "Search People" button in the extension popup, and before clicking "Start", narrow down your search by typing "Recruiter" in LinkedIn Search Bar and specifying
 the company name and location of the company. And then you can click "Start".
 
-![LinkedIn AutoConnect Screenshot #2](screenshots/linkedin_autoconnect_screenshot_3.png)
+![LinkedIn AutoConnect Screenshot #2](.github/screenshots/linkedin_autoconnect_screenshot_3.png)
