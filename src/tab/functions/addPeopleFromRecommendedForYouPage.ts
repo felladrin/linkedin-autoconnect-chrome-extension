@@ -11,13 +11,7 @@ export function addPeopleFromRecommendedForYouPage() {
     document.querySelectorAll<HTMLButtonElement>(
       LinkedInSelector.ConnectButtonsFromRecommendedPage
     )
-  )
-    .filter(
-      (element) =>
-        element.innerText === "Connect" &&
-        typeof element.parentElement.click !== "undefined"
-    )
-    .map((element) => element.parentElement);
+  );
 
   window.scrollTo(0, document.body.scrollHeight);
 
@@ -27,6 +21,7 @@ export function addPeopleFromRecommendedForYouPage() {
         if (state.isAutoConnectRunning) {
           item.focus();
           item.click();
+          item.disabled = true;
           window.scrollBy(0, 200);
         }
       }, alreadyInvited++ * delayBetweenClicks);
