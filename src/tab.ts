@@ -16,7 +16,7 @@
   };
 
   function clickSendNowButtonIfAvailable() {
-    const sendNowButton = document.querySelector(
+    const sendNowButton = document.querySelector<HTMLButtonElement>(
       linkedInSelector.sendNowButton
     );
 
@@ -24,13 +24,13 @@
   }
 
   function dismissEmailRequiredDialog() {
-    const cancelButton = document.querySelector(linkedInSelector.cancelButton);
+    const cancelButton = document.querySelector<HTMLButtonElement>(linkedInSelector.cancelButton);
 
     if (cancelButton) cancelButton.click();
   }
 
   function goToNextPage() {
-    const nextButton = document.querySelector(linkedInSelector.nextButton);
+    const nextButton = document.querySelector<HTMLButtonElement>(linkedInSelector.nextButton);
 
     if (nextButton) nextButton.click();
   }
@@ -41,7 +41,7 @@
     let alreadyInvited = 0;
 
     const delayBetweenClicks = 1500;
-    const connectButtons = document.querySelectorAll(
+    const connectButtons = document.querySelectorAll<HTMLButtonElement>(
       linkedInSelector.connectButtonsFromSearchPage
     );
 
@@ -92,7 +92,7 @@
     let alreadyInvited = 0;
 
     const connectButtons = Array.from(
-      document.querySelectorAll(
+      document.querySelectorAll<HTMLButtonElement>(
         linkedInSelector.connectButtonsFromRecommendedPage
       )
     )

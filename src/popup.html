@@ -1,38 +1,36 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <title>LinkedIn AutoConnect</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
 
-<head>
-  <title>LinkedIn AutoConnect</title>
-  <link rel="stylesheet" href="popup.css">
-</head>
-
-<body>
-  <strong>LinkedIn AutoConnect</strong>
-  <div id="searchPeopleMessage">
-    <p>You're on 'Search People' page!</p>
-  </div>
-  <div id="recommendedForYouMessage">
-    <p>You're on 'Recommended For You' page!</p>
-  </div>
-  <div id="selectOptionMessage">
-    <p>
-      Select one of the following<br />
-      LinkedIn Pages to open:
-    </p>
-    <div>
-      <button id="openLinkedInSearchPage">
-        <span>Search<br />People</span>
-      </button>
+  <body>
+    <strong>LinkedIn AutoConnect</strong>
+    <div id="searchPeopleMessage">
+      <p>You're on 'Search People' page!</p>
     </div>
-    <div>
-      <button id="openLinkedInRecommendedForYouPage">
-        <span>Recommended For You</span>
-      </button>
+    <div id="recommendedForYouMessage">
+      <p>You're on 'Recommended For You' page!</p>
     </div>
-  </div>
-  <button id="startButton"><span>START</span></button>
-  <button id="stopButton"><span>STOP</span></button>
-  <script src="popup.js"></script>
-</body>
-
+    <div id="selectOptionMessage">
+      <p>
+        Select one of the following<br />
+        LinkedIn Pages to open:
+      </p>
+      <div>
+        <button id="openLinkedInSearchPage">
+          <span>Search<br />People</span>
+        </button>
+      </div>
+      <div>
+        <button id="openLinkedInRecommendedForYouPage">
+          <span>Recommended For You</span>
+        </button>
+      </div>
+    </div>
+    <button id="startButton"><span>START</span></button>
+    <button id="stopButton"><span>STOP</span></button>
+    <script src="popup.ts"></script>
+  </body>
 </html>

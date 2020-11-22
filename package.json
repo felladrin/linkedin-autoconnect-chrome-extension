@@ -12,8 +12,19 @@
   "bugs": {
     "url": "https://github.com/felladrin/linkedin-autoconnect-chrome-extension/issues"
   },
-  "homepage": "https://github.com/felladrin/linkedin-autoconnect-chrome-extension#readme",
+  "scripts": {
+    "build": "run-s remove-dist-folder build-popup build-tab copy-static-files-to-dist zip-dist-folder",
+    "build-popup": "npx parcel build src/popup.html --no-source-maps",
+    "build-tab": "npx parcel build src/tab.ts --no-source-maps",
+    "copy-static-files-to-dist": "shx cp -r \"static/*\" \"dist\"",
+    "zip-dist-folder": "cd dist && bestzip linkedin-autoconnect-chrome-extension.zip *",
+    "remove-dist-folder": "shx rm -rf dist"
+  },
   "devDependencies": {
-    "@types/chrome": "0.0.126"
+    "@types/chrome": "^0.0.126",
+    "bestzip": "^2.1.7",
+    "npm-run-all": "^4.1.5",
+    "parcel": "^2.0.0-beta.1",
+    "shx": "^0.3.3"
   }
 }
