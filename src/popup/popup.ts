@@ -16,7 +16,7 @@ state.startButton.addEventListener("click", () => {
       ExtensionMessage.IsAutoConnectAvailable,
       (response) => {
         if (!response) {
-          chrome.tabs.executeScript({ file: "tab.js" }, () => {
+          chrome.tabs.executeScript({ file: "tab/tab.js" }, () => {
             chrome.tabs.sendMessage(
               activeTab.id,
               ExtensionMessage.StartAutoConnect

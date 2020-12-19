@@ -22,7 +22,6 @@ export function addPeopleFromRecommendedForYouPage() {
           item.focus();
           item.click();
           item.disabled = true;
-          window.scrollBy(0, 200);
         }
       }, alreadyInvited++ * delayBetweenClicks);
     }

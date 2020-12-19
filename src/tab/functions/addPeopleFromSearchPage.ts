@@ -25,7 +25,6 @@ export function addPeopleFromSearchPage() {
           button.focus();
           button.click();
           button.disabled = true;
-          window.scrollBy(0, 200);
           clickSendNowButtonIfAvailable();
           dismissEmailRequiredDialog();
         }
