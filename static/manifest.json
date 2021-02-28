@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "LinkedIn AutoConnect",
   "description": "Automatically clicks all 'Connect' buttons available on LinkedIn 'Search People' and 'Recommended For You' pages.",
-  "version": "1.2.7",
+  "version": "1.2.8",
   "browser_action": {
     "default_popup": "popup/popup.html"
   },
