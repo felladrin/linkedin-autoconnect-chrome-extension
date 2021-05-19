@@ -1,5 +1,5 @@
-import { state } from "../constants/state";
+import { selectOptionMessage, classHidden } from "../constants";
 
 export function showSelectOptionMessage() {
-  state.selectOptionMessage?.classList.remove(state.classHidden);
+  selectOptionMessage?.classList.remove(classHidden);
 }

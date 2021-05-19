@@ -1,6 +1,6 @@
-import { state } from "../constants/state";
+import { startButton, classHidden, stopButton } from "../constants";
 
 export function hideStartAndStopButtons() {
-  state.startButton?.classList.add(state.classHidden);
-  state.stopButton?.classList.add(state.classHidden);
+  startButton?.classList.add(classHidden);
+  stopButton?.classList.add(classHidden);
 }

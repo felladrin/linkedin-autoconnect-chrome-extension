@@ -1,6 +1,5 @@
 import { ExtensionMessage } from "../shared/enums/ExtensionMessage";
 import { LinkedInUrl } from "../shared/enums/LinkedInUrl";
-import { state } from "./constants/state";
 import { showStartButtonAndHideStopButton } from "./functions/showStartButtonAndHideStopButton";
 import { showStopButtonAndHideStartButton } from "./functions/showStopButtonAndHideStartButton";
 import { hideStartAndStopButtons } from "./functions/hideStartAndStopButtons";
@@ -8,8 +7,14 @@ import { hideAllMessages } from "./functions/hideAllMessages";
 import { showSearchPeopleMessage } from "./functions/showSearchPeopleMessage";
 import { showRecommendedForYouMessage } from "./functions/showRecommendedForYouMessage";
 import { showSelectOptionMessage } from "./functions/showSelectOptionMessage";
+import {
+  startButton,
+  stopButton,
+  openLinkedInSearchPage,
+  openLinkedInRecommendedForYouPage,
+} from "./constants";
 
-state.startButton?.addEventListener("click", () => {
+startButton?.addEventListener("click", () => {
   chrome.tabs.query({ active: true }, ([activeTab]) => {
     if (!activeTab.id) return;
 
@@ -39,7 +44,7 @@ state.startButton?.addEventListener("click", () => {
   });
 });
 
-state.stopButton?.addEventListener("click", () => {
+stopButton?.addEventListener("click", () => {
   chrome.tabs.query({ active: true }, ([activeTab]) => {
     if (!activeTab.id) return;
     chrome.tabs.sendMessage(activeTab.id, ExtensionMessage.StopAutoConnect);
@@ -47,11 +52,11 @@ state.stopButton?.addEventListener("click", () => {
   });
 });
 
-state.openLinkedInSearchPage?.addEventListener("click", () => {
+openLinkedInSearchPage?.addEventListener("click", () => {
   chrome.tabs.update({ url: LinkedInUrl.SearchPeoplePage });
 });
 
-state.openLinkedInRecommendedForYouPage?.addEventListener("click", () => {
+openLinkedInRecommendedForYouPage?.addEventListener("click", () => {
   chrome.tabs.update({ url: LinkedInUrl.MyNetworkPage });
 });
 

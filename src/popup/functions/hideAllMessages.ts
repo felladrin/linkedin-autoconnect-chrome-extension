@@ -1,7 +1,12 @@
-import { state } from "../constants/state";
+import {
+  searchPeopleMessage,
+  classHidden,
+  recommendedForYouMessage,
+  selectOptionMessage,
+} from "../constants";
 
 export function hideAllMessages() {
-  state.searchPeopleMessage?.classList.add(state.classHidden);
-  state.recommendedForYouMessage?.classList.add(state.classHidden);
-  state.selectOptionMessage?.classList.add(state.classHidden);
+  searchPeopleMessage?.classList.add(classHidden);
+  recommendedForYouMessage?.classList.add(classHidden);
+  selectOptionMessage?.classList.add(classHidden);
 }

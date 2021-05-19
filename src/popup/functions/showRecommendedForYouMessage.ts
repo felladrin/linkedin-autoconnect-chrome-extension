@@ -1,5 +1,5 @@
-import { state } from "../constants/state";
+import { recommendedForYouMessage, classHidden } from "../constants";
 
 export function showRecommendedForYouMessage() {
-  state.recommendedForYouMessage?.classList.remove(state.classHidden);
+  recommendedForYouMessage?.classList.remove(classHidden);
 }

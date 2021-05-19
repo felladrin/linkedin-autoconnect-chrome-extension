@@ -1,5 +1,5 @@
-import { state } from "../constants/state";
+import { searchPeopleMessage, classHidden } from "../constants";
 
 export function showSearchPeopleMessage() {
-  state.searchPeopleMessage?.classList.remove(state.classHidden);
+  searchPeopleMessage?.classList.remove(classHidden);
 }
