@@ -9,23 +9,27 @@ import { showSearchPeopleMessage } from "./functions/showSearchPeopleMessage";
 import { showRecommendedForYouMessage } from "./functions/showRecommendedForYouMessage";
 import { showSelectOptionMessage } from "./functions/showSelectOptionMessage";
 
-state.startButton.addEventListener("click", () => {
+state.startButton?.addEventListener("click", () => {
   chrome.tabs.query({ active: true }, ([activeTab]) => {
+    if (!activeTab.id) return;
+
+    const activeTabId = activeTab.id;
+
     chrome.tabs.sendMessage(
-      activeTab.id,
+      activeTabId,
       ExtensionMessage.IsAutoConnectAvailable,
       (response) => {
         if (!response) {
           chrome.tabs.executeScript({ file: "tab/tab.js" }, () => {
             chrome.tabs.sendMessage(
-              activeTab.id,
+              activeTabId,
               ExtensionMessage.StartAutoConnect
             );
             showStopButtonAndHideStartButton();
           });
         } else {
           chrome.tabs.sendMessage(
-            activeTab.id,
+            activeTabId,
             ExtensionMessage.StartAutoConnect
           );
           showStopButtonAndHideStartButton();
@@ -35,28 +39,29 @@ state.startButton.addEventListener("click", () => {
   });
 });
 
-state.stopButton.addEventListener("click", () => {
+state.stopButton?.addEventListener("click", () => {
   chrome.tabs.query({ active: true }, ([activeTab]) => {
+    if (!activeTab.id) return;
     chrome.tabs.sendMessage(activeTab.id, ExtensionMessage.StopAutoConnect);
     showStartButtonAndHideStopButton();
   });
 });
 
-state.openLinkedInSearchPage.addEventListener("click", () => {
+state.openLinkedInSearchPage?.addEventListener("click", () => {
   chrome.tabs.update({ url: LinkedInUrl.SearchPeoplePage });
 });
 
-state.openLinkedInRecommendedForYouPage.addEventListener("click", () => {
+state.openLinkedInRecommendedForYouPage?.addEventListener("click", () => {
   chrome.tabs.update({ url: LinkedInUrl.MyNetworkPage });
 });
 
 chrome.tabs.query({ active: true }, function updatePopupContent([activeTab]) {
-  const isOnSearchPage = activeTab.url.includes(
-    LinkedInUrl.PatternOfSearchPage
-  );
-  const isOnRecommendedForYouPage = activeTab.url.includes(
-    LinkedInUrl.PatternOfMyNetworkPage
-  );
+  if (!activeTab.id) return;
+
+  const isOnSearchPage =
+    activeTab.url?.includes(LinkedInUrl.PatternOfSearchPage) ?? false;
+  const isOnRecommendedForYouPage =
+    activeTab.url?.includes(LinkedInUrl.PatternOfMyNetworkPage) ?? false;
 
   hideAllMessages();
 
