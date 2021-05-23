@@ -7,14 +7,11 @@ export function CurrentPageMessage() {
   const isOnSearchPeoplePage = useStore(isOnSearchPeoplePageStore);
   const isOnMyNetworkPage = useStore(isOnMyNetworkPageStore);
 
+  if (!isOnSearchPeoplePage && !isOnMyNetworkPage) return null;
+
   return (
-    <>
-      <Typography component="p" variant="body2" hidden={!isOnSearchPeoplePage}>
-        You're on 'Search People' page!
-      </Typography>
-      <Typography component="p" variant="body2" hidden={!isOnMyNetworkPage}>
-        You're on 'My Network' page!
-      </Typography>
-    </>
+    <Typography component="p" variant="body2">
+      You're on '{isOnSearchPeoplePage ? "Search People" : "My Network"}' page!
+    </Typography>
   );
 }
