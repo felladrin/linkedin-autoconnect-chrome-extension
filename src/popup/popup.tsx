@@ -2,14 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { activeTabInfoReceived, chromeTabUpdated } from "./events";
 import { App } from "./components/App";
-import "./behaviors/onActiveTabInfoReceived";
-import "./behaviors/onAutoConnectionStatusRequested";
-import "./behaviors/onChromeTabUpdated";
-import "./behaviors/onMyNetworkButtonClicked";
-import "./behaviors/onPageChanged";
-import "./behaviors/onSearchPeopleButtonClicked";
-import "./behaviors/onStartButtonClicked";
-import "./behaviors/onStopButtonClicked";
+import "./behaviors/*.ts";
 
 chrome.tabs.query({ active: true }, ([activeTab]) =>
   activeTabInfoReceived(activeTab)
