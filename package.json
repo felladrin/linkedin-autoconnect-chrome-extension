@@ -32,6 +32,8 @@
   },
   "dependencies": {
     "@material-ui/core": "^4.11.4",
+    "@material-ui/icons": "^4.11.2",
+    "@types/react": "^17.0.6",
     "effector": "^21.8.11",
     "effector-react": "^21.3.2",
     "react": "^17.0.2",

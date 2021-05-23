@@ -1,6 +1,12 @@
 import React from "react";
 import { useStore } from "effector-react";
-import { Button, Typography } from "@material-ui/core";
+import Avatar from "@material-ui/core/Avatar";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemAvatar from "@material-ui/core/ListItemAvatar";
+import ListItemText from "@material-ui/core/ListItemText";
+import People from "@material-ui/icons/People";
+import Search from "@material-ui/icons/Search";
 import { searchPeopleButtonClicked, myNetworkButtonClicked } from "../events";
 import { isOnSearchPeoplePageStore, isOnMyNetworkPageStore } from "../stores";
 
@@ -11,26 +17,23 @@ export function PageSelection() {
   if (isOnSearchPeoplePage || isOnMyNetworkPage) return null;
 
   return (
-    <>
-      <Typography component="p" variant="body2">
-        Select one of the following LinkedIn Pages to open:
-      </Typography>
-      <Button
-        variant="contained"
-        color="primary"
-        fullWidth
-        onClick={() => searchPeopleButtonClicked()}
-      >
-        Search People
-      </Button>
-      <Button
-        variant="contained"
-        color="secondary"
-        fullWidth
-        onClick={() => myNetworkButtonClicked()}
-      >
-        My Network
-      </Button>
-    </>
+    <List>
+      <ListItem button onClick={() => searchPeopleButtonClicked()}>
+        <ListItemAvatar>
+          <Avatar>
+            <Search />
+          </Avatar>
+        </ListItemAvatar>
+        <ListItemText primary="Search People" />
+      </ListItem>
+      <ListItem button onClick={() => myNetworkButtonClicked()}>
+        <ListItemAvatar>
+          <Avatar>
+            <People />
+          </Avatar>
+        </ListItemAvatar>
+        <ListItemText primary="People You May Know" />
+      </ListItem>
+    </List>
   );
 }
