@@ -1,8 +1,8 @@
 import { LinkedInSelector } from "../enums/LinkedInSelector";
-import { state } from "../constants/state";
+import { isRunningStore } from "../stores";
 
 export function addPeopleFromRecommendedForYouPage() {
-  if (!state.isAutoConnectRunning) return;
+  if (!isRunningStore.getState()) return;
 
   const delayBetweenClicks = 2000;
   let alreadyInvited = 0;
@@ -18,7 +18,7 @@ export function addPeopleFromRecommendedForYouPage() {
   if (connectButtons.length > 0) {
     for (const item of connectButtons) {
       setTimeout(() => {
-        if (state.isAutoConnectRunning) {
+        if (isRunningStore.getState()) {
           item.focus();
           item.click();
           item.disabled = true;

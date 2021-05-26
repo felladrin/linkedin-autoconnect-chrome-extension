@@ -2,10 +2,10 @@ import { clickSendNowButtonIfAvailable } from "./clickSendNowButtonIfAvailable";
 import { dismissEmailRequiredDialog } from "./dismissEmailRequiredDialog";
 import { goToNextPage } from "./goToNextPage";
 import { LinkedInSelector } from "../enums/LinkedInSelector";
-import { state } from "../constants/state";
+import { isRunningStore } from "../stores";
 
 export function addPeopleFromSearchPage() {
-  if (!state.isAutoConnectRunning) return;
+  if (!isRunningStore.getState()) return;
 
   let alreadyInvited = 0;
 
@@ -19,7 +19,7 @@ export function addPeopleFromSearchPage() {
   if (connectButtons.length > 0) {
     for (const button of connectButtons) {
       setTimeout(() => {
-        if (state.isAutoConnectRunning) {
+        if (isRunningStore.getState()) {
           dismissEmailRequiredDialog();
           clickSendNowButtonIfAvailable();
           button.focus();
@@ -35,7 +35,7 @@ export function addPeopleFromSearchPage() {
   }
 
   setTimeout(() => {
-    if (!state.isAutoConnectRunning) return;
+    if (!isRunningStore.getState()) return;
 
     let thereAreConnectButtonsLeft = false;
 
