@@ -1,6 +1,7 @@
 import { createEvent } from "effector";
 import { ExtensionMessage } from "../shared/enums/ExtensionMessage";
 import { split } from "effector";
+import { LinkedInUrl } from "../shared/enums/LinkedInUrl";
 
 export const chromeMessageReceived =
   createEvent<{
@@ -20,8 +21,17 @@ export const extensionMessageReceived = split(chromeMessageReceived, {
     message === ExtensionMessage.StopAutoConnect,
 });
 
-export const lastLocationUpdated = createEvent<string>();
+export const windowLocationUpdated = createEvent<string>();
 
-export const navigatedToAnUnexpectedPageWhileRunning = createEvent();
+export const {
+  searchPageLoaded,
+  myNetworkPageLoaded,
+  __: unexpectedPageLoaded,
+} = split(windowLocationUpdated, {
+  searchPageLoaded: (windowLocation) =>
+    windowLocation.includes(LinkedInUrl.PatternOfSearchPage),
+  myNetworkPageLoaded: (windowLocation) =>
+    windowLocation.includes(LinkedInUrl.PatternOfMyNetworkPage),
+});
 
 export const oneSecondIntervalTicked = createEvent();

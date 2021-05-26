@@ -1,7 +1,7 @@
 import { LinkedInSelector } from "../enums/LinkedInSelector";
 import { isRunningStore } from "../stores";
 
-export function addPeopleFromRecommendedForYouPage() {
+export function addPeopleFromMyNetworkPage() {
   if (!isRunningStore.getState()) return;
 
   const delayBetweenClicks = 2000;
@@ -28,6 +28,6 @@ export function addPeopleFromRecommendedForYouPage() {
   }
 
   setTimeout(() => {
-    addPeopleFromRecommendedForYouPage();
+    addPeopleFromMyNetworkPage();
   }, alreadyInvited * delayBetweenClicks + 1000);
 }

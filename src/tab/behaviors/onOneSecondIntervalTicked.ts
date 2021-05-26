@@ -1,31 +1,16 @@
 import { combine, sample } from "effector";
-import {
-  lastLocationUpdated,
-  navigatedToAnUnexpectedPageWhileRunning,
-  oneSecondIntervalTicked,
-} from "../events";
-import { addPeopleFromRecommendedForYouPage } from "../functions/addPeopleFromRecommendedForYouPage";
-import { addPeopleFromSearchPage } from "../functions/addPeopleFromSearchPage";
-import { isOnRecommendedForYouPage } from "../functions/isOnRecommendedForYouPage";
-import { isOnSearchPage } from "../functions/isOnSearchPage";
-import { isRunningStore, lastLocationStore } from "../stores";
+import { windowLocationUpdated, oneSecondIntervalTicked } from "../events";
+import { isRunningStore, lastWindowLocationStore } from "../stores";
 
 sample({
   clock: oneSecondIntervalTicked,
-  source: combine(isRunningStore, lastLocationStore),
+  source: combine({
+    isRunning: isRunningStore,
+    lastWindowLocation: lastWindowLocationStore,
+  }),
 })
   .filter({
-    fn: ([isAutoConnectionRunning, lastLocation]) =>
-      isAutoConnectionRunning && window.location.href !== lastLocation,
+    fn: ({ isRunning, lastWindowLocation }) =>
+      isRunning && window.location.href !== lastWindowLocation,
   })
-  .watch(() => {
-    lastLocationUpdated(window.location.href);
-
-    if (isOnSearchPage()) {
-      addPeopleFromSearchPage();
-    } else if (isOnRecommendedForYouPage()) {
-      addPeopleFromRecommendedForYouPage();
-    } else {
-      navigatedToAnUnexpectedPageWhileRunning();
-    }
-  });
+  .watch(() => windowLocationUpdated(window.location.href));

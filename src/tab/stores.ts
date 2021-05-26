@@ -1,12 +1,16 @@
 import { createStore, restore } from "effector";
 import { ExtensionMessage } from "../shared/enums/ExtensionMessage";
-import { extensionMessageReceived, lastLocationUpdated, navigatedToAnUnexpectedPageWhileRunning } from "./events";
+import {
+  extensionMessageReceived,
+  windowLocationUpdated,
+  unexpectedPageLoaded,
+} from "./events";
 
 export const isRunningStore = createStore(false)
   .on(extensionMessageReceived[ExtensionMessage.StartAutoConnect], () => true)
   .reset([
     extensionMessageReceived[ExtensionMessage.StopAutoConnect],
-    navigatedToAnUnexpectedPageWhileRunning,
+    unexpectedPageLoaded,
   ]);
 
-export const lastLocationStore = restore(lastLocationUpdated, "");
+export const lastWindowLocationStore = restore(windowLocationUpdated, "");
