@@ -1,4 +1,8 @@
-import { myNetworkPageLoaded } from "../events";
-import { addPeopleFromMyNetworkPage } from "../functions/addPeopleFromMyNetworkPage";
+import { myNetworkPageLoaded } from "../events/pageLoaded";
+import { buttonClickRequested } from "../events/buttonClickRequested";
+import { guard } from "effector";
+import { isRunningStore } from "../stores/isRunningStore";
 
-myNetworkPageLoaded.watch(() => addPeopleFromMyNetworkPage());
+guard(myNetworkPageLoaded, {
+  filter: isRunningStore,
+}).watch(() => buttonClickRequested());

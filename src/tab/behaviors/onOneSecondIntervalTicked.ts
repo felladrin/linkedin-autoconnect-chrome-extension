@@ -1,16 +1,14 @@
-import { combine, sample } from "effector";
-import { windowLocationUpdated, oneSecondIntervalTicked } from "../events";
-import { isRunningStore, lastWindowLocationStore } from "../stores";
+import { guard, sample } from "effector";
+import { windowLocationUpdated } from "../events/windowLocationUpdated";
+import { oneSecondIntervalTicked } from "../events/oneSecondIntervalTicked";
+import { lastWindowLocationStore } from "../stores/lastWindowLocationStore";
 
-sample({
-  clock: oneSecondIntervalTicked,
-  source: combine({
-    isRunning: isRunningStore,
-    lastWindowLocation: lastWindowLocationStore,
+guard(
+  sample({
+    clock: oneSecondIntervalTicked,
+    source: lastWindowLocationStore,
   }),
-})
-  .filter({
-    fn: ({ isRunning, lastWindowLocation }) =>
-      isRunning && window.location.href !== lastWindowLocation,
-  })
-  .watch(() => windowLocationUpdated(window.location.href));
+  {
+    filter: (lastWindowLocation) => window.location.href !== lastWindowLocation,
+  }
+).watch(() => windowLocationUpdated(window.location.href));

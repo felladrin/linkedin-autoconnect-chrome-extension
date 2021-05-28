@@ -1,4 +1,4 @@
-import { LinkedInSelector } from "../enums/LinkedInSelector";
+import { LinkedInSelector } from "../../shared/enums/LinkedInSelector";
 
 export function goToNextPage() {
   const nextButton = document.querySelector<HTMLButtonElement>(
