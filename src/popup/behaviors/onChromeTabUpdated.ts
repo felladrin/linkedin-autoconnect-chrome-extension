@@ -1,6 +1,7 @@
 import { sample } from "effector";
-import { activeTabUrlUpdated, chromeTabUpdated } from "../events";
-import { activeTabIdStore } from "../stores";
+import { chromeTabUpdated } from "../events/chromeTabUpdated";
+import { activeTabUrlUpdated } from "../events/activeTabUrlUpdated";
+import { activeTabIdStore } from "../stores/activeTabIdStore";
 
 sample({
   clock: chromeTabUpdated,

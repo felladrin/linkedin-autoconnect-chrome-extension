@@ -23,7 +23,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export function App() {
+export function Popup() {
   const classes = useStyles();
   return (
     <ThemeProvider theme={darkTheme}>

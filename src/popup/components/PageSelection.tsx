@@ -7,8 +7,10 @@ import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import ListItemText from "@material-ui/core/ListItemText";
 import People from "@material-ui/icons/People";
 import Search from "@material-ui/icons/Search";
-import { searchPeopleButtonClicked, myNetworkButtonClicked } from "../events";
-import { isOnSearchPeoplePageStore, isOnMyNetworkPageStore } from "../stores";
+import { myNetworkButtonClicked } from "../events/myNetworkButtonClicked";
+import { searchPeopleButtonClicked } from "../events/searchPeopleButtonClicked";
+import { isOnSearchPeoplePageStore } from "../stores/isOnSearchPeoplePageStore";
+import { isOnMyNetworkPageStore } from "../stores/isOnMyNetworkPageStore";
 
 export function PageSelection() {
   const isOnSearchPeoplePage = useStore(isOnSearchPeoplePageStore);

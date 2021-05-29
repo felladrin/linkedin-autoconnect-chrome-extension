@@ -1,12 +1,11 @@
 import React from "react";
 import { useStore } from "effector-react";
 import Button from "@material-ui/core/Button";
-import { stopButtonClicked, startButtonClicked } from "../events";
-import {
-  isOnSearchPeoplePageStore,
-  isOnMyNetworkPageStore,
-  isAutoConnectionRunningStore,
-} from "../stores";
+import { stopButtonClicked } from "../events/stopButtonClicked";
+import { startButtonClicked } from "../events/startButtonClicked";
+import { isOnSearchPeoplePageStore } from "../stores/isOnSearchPeoplePageStore";
+import { isOnMyNetworkPageStore } from "../stores/isOnMyNetworkPageStore";
+import { isAutoConnectionRunningStore } from "../stores/isAutoConnectionRunningStore";
 
 export function StartStopButton() {
   const isOnSearchPeoplePage = useStore(isOnSearchPeoplePageStore);

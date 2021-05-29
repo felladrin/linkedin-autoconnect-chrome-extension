@@ -7,7 +7,3 @@ export const chromeMessageReceived =
     sender: chrome.runtime.MessageSender;
     sendResponse: (response?: any) => void;
   }>();
-
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) =>
-  chromeMessageReceived({ message, sender, sendResponse })
-);

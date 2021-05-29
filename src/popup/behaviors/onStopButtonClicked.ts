@@ -1,7 +1,8 @@
 import { ExtensionMessage } from "../../shared/enums/ExtensionMessage";
 import { sample } from "effector";
-import { stopButtonClicked, autoConnectionStatusRequested } from "../events";
-import { activeTabIdStore } from "../stores";
+import { autoConnectionStatusRequested } from "../events/autoConnectionStatusRequested";
+import { stopButtonClicked } from "../events/stopButtonClicked";
+import { activeTabIdStore } from "../stores/activeTabIdStore";
 
 sample({
   clock: stopButtonClicked,

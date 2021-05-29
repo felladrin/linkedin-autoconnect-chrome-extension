@@ -1,11 +1,9 @@
 import { ExtensionMessage } from "../../shared/enums/ExtensionMessage";
 import { sample } from "effector";
-import {
-  autoConnectionStarted,
-  autoConnectionStopped,
-  autoConnectionStatusRequested,
-} from "../events";
-import { activeTabIdStore } from "../stores";
+import { autoConnectionStatusRequested } from "../events/autoConnectionStatusRequested";
+import { autoConnectionStopped } from "../events/autoConnectionStopped";
+import { autoConnectionStarted } from "../events/autoConnectionStarted";
+import { activeTabIdStore } from "../stores/activeTabIdStore";
 
 sample({
   clock: autoConnectionStatusRequested,
