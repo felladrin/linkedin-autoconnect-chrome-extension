@@ -1,6 +1,6 @@
 import React from "react";
 import { useStore } from "effector-react";
-import Button from "@material-ui/core/Button";
+import { Button } from "@chakra-ui/react";
 import { stopButtonClicked } from "../events/stopButtonClicked";
 import { startButtonClicked } from "../events/startButtonClicked";
 import { isOnSearchPeoplePageStore } from "../stores/isOnSearchPeoplePageStore";
@@ -16,12 +16,11 @@ export function StartStopButton() {
 
   return (
     <Button
-      variant="contained"
-      color={isAutoConnectionRunning ? "secondary" : "primary"}
-      fullWidth
+      colorScheme={isAutoConnectionRunning ? "red" : "green"}
       onClick={() =>
         isAutoConnectionRunning ? stopButtonClicked() : startButtonClicked()
       }
+      isFullWidth
     >
       {isAutoConnectionRunning ? "STOP" : "START"} CONNECTING
     </Button>

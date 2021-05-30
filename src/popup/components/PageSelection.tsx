@@ -1,12 +1,7 @@
 import React from "react";
 import { useStore } from "effector-react";
-import Avatar from "@material-ui/core/Avatar";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import ListItemText from "@material-ui/core/ListItemText";
-import People from "@material-ui/icons/People";
-import Search from "@material-ui/icons/Search";
+import { MdPeople, MdSearch } from "react-icons/md";
+import { List, ListItem, Button } from "@chakra-ui/react";
 import { myNetworkButtonClicked } from "../events/myNetworkButtonClicked";
 import { searchPeopleButtonClicked } from "../events/searchPeopleButtonClicked";
 import { isOnSearchPeoplePageStore } from "../stores/isOnSearchPeoplePageStore";
@@ -19,22 +14,24 @@ export function PageSelection() {
   if (isOnSearchPeoplePage || isOnMyNetworkPage) return null;
 
   return (
-    <List>
-      <ListItem button onClick={() => searchPeopleButtonClicked()}>
-        <ListItemAvatar>
-          <Avatar>
-            <Search />
-          </Avatar>
-        </ListItemAvatar>
-        <ListItemText primary="Search People" />
+    <List spacing={3}>
+      <ListItem>
+        <Button
+          onClick={() => myNetworkButtonClicked()}
+          leftIcon={<MdPeople />}
+          isFullWidth
+        >
+          People You May Know
+        </Button>
       </ListItem>
-      <ListItem button onClick={() => myNetworkButtonClicked()}>
-        <ListItemAvatar>
-          <Avatar>
-            <People />
-          </Avatar>
-        </ListItemAvatar>
-        <ListItemText primary="People You May Know" />
+      <ListItem>
+        <Button
+          onClick={() => searchPeopleButtonClicked()}
+          leftIcon={<MdSearch />}
+          isFullWidth
+        >
+          Search People
+        </Button>
       </ListItem>
     </List>
   );

@@ -1,8 +1,12 @@
-import { sample } from "effector";
 import { saveOptions } from "../effects/saveOptions";
-import { saveOptionsResultMessageOpened } from "../events/saveOptionsResultMessageOpened";
+import { optionsSavedToast } from "../constants/optionsSavedToast";
 
-sample({
-  clock: saveOptions.done,
-  target: saveOptionsResultMessageOpened,
-});
+saveOptions.done.watch(() =>
+  optionsSavedToast({
+    position: "top",
+    title: "Options saved!",
+    status: "success",
+    duration: 2000,
+    isClosable: true,
+  })
+);
