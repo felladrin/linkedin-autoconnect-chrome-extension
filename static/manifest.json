@@ -4,10 +4,10 @@
   "description": "Automatically clicks all 'Connect' buttons available on LinkedIn 'Search People' and 'Recommended For You' pages.",
   "version": "1.2.8",
   "action": {
-    "default_popup": "popup/popup.html"
+    "default_popup": "pages/src/popup/popup.html"
   },
   "options_ui": {
-    "page": "options/options.html",
+    "page": "pages/src/options/options.html",
     "open_in_tab": true
   },
   "icons": {

@@ -13,22 +13,25 @@
     "url": "https://github.com/felladrin/linkedin-autoconnect-chrome-extension/issues"
   },
   "scripts": {
-    "watch": "run-s build parcel-watch",
-    "build": "run-s remove-dist-folder parcel-build copy-static-files-to-dist zip-dist-folder",
-    "parcel-watch": "parcel watch src/popup/popup.html src/options/options.html src/tab/tab.ts",
-    "parcel-build": "parcel build src/popup/popup.html src/options/options.html src/tab/tab.ts --no-source-maps",
+    "watch": "run-s recreate-dist-folder copy-static-files-to-dist && run-p vite-html-watch vite-lib-watch",
+    "build": "run-s recreate-dist-folder copy-static-files-to-dist vite-html vite-lib zip-dist-folder",
+    "vite-html": "vite build --config vite-pages-config.ts",
+    "vite-lib": "vite build --config vite-tab-config.ts",
+    "vite-html-watch": "npm run vite-html -- --watch --mode development",
+    "vite-lib-watch": "npm run vite-lib -- --watch --mode development",
     "copy-static-files-to-dist": "shx cp -r \"static/*\" \"dist\"",
     "zip-dist-folder": "cd dist && bestzip linkedin-autoconnect-chrome-extension.zip *",
-    "remove-dist-folder": "shx rm -rf dist"
+    "recreate-dist-folder": "shx rm -rf dist && shx mkdir dist"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.143",
+    "@types/node": "^15.6.1",
     "@types/react-dom": "^17.0.5",
     "bestzip": "^2.2.0",
     "npm-run-all": "^4.1.5",
-    "parcel-bundler": "^1.12.5",
     "shx": "^0.3.3",
-    "typescript": "^4.3.2"
+    "typescript": "^4.3.2",
+    "vite": "^2.3.4"
   },
   "dependencies": {
     "@chakra-ui/react": "^1.6.3",

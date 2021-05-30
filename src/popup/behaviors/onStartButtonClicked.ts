@@ -14,7 +14,7 @@ startButtonClicked.watch(() => {
       (response) => {
         if (!response) {
           chrome.scripting.executeScript(
-            { files: ["tab/tab.js"], target: { tabId: activeTabId } },
+            { files: ["tab/tab.es.js"], target: { tabId: activeTabId } },
             () => {
               chrome.tabs.sendMessage(
                 activeTabId,
