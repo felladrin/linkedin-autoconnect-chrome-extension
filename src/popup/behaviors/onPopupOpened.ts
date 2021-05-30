@@ -1,6 +1,6 @@
 import { popupOpened } from "../events/popupOpened";
 import React from "react";
-import ReactDOM from "react-dom";
+import { render } from "react-dom";
 import { Popup } from "../components/Popup";
 import { activeTabInfoReceived } from "../events/activeTabInfoReceived";
 import { chromeTabUpdated } from "../events/chromeTabUpdated";
@@ -14,7 +14,7 @@ popupOpened.watch(() => {
     chromeTabUpdated(updatedTab)
   );
 
-  ReactDOM.render(
+  render(
     React.createElement(Popup),
     document.body.appendChild(document.createElement("div"))
   );
