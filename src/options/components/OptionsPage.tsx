@@ -45,9 +45,7 @@ export function OptionsPage() {
               <FormLabel>Maximum auto-connections per session</FormLabel>
               <NumberInput
                 value={maximumAutoConnectionsPerSession}
-                onChange={(valueString) =>
-                  maximumAutoConnectionsPerSessionChanged(valueString)
-                }
+                onChange={maximumAutoConnectionsPerSessionChanged}
               >
                 <NumberInputField />
                 <NumberInputStepper>
