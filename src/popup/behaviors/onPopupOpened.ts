@@ -4,11 +4,10 @@ import { render } from "react-dom";
 import { Popup } from "../components/Popup";
 import { activeTabInfoReceived } from "../events/activeTabInfoReceived";
 import { chromeTabUpdated } from "../events/chromeTabUpdated";
+import { getActiveTab } from "../functions/getActiveTab";
 
 popupOpened.watch(() => {
-  chrome.tabs.query({ active: true }, ([activeTab]) =>
-    activeTabInfoReceived(activeTab)
-  );
+  getActiveTab().then(activeTabInfoReceived);
 
   chrome.tabs.onUpdated.addListener((_, __, updatedTab) =>
     chromeTabUpdated(updatedTab)
