@@ -15,10 +15,10 @@ startButtonClicked.watch(async () => {
       if (!isAvailable) {
         alert("Error: Extension was not able to access the LinkedIn Page.");
         return;
-          }
-
-        chrome.tabs.sendMessage(activeTabId, ExtensionMessage.StartAutoConnect);
-        autoConnectionStatusRequested();
       }
+
+      chrome.tabs.sendMessage(activeTabId, ExtensionMessage.StartAutoConnect);
+      autoConnectionStatusRequested();
+    }
   );
 });
