@@ -15,5 +15,14 @@
     "128": "images/icon128.png"
   },
   "permissions": ["activeTab", "tabs", "scripting", "storage"],
-  "host_permissions": ["*://*.linkedin.com/*"]
+  "host_permissions": ["https://*.linkedin.com/*"],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.linkedin.com/search/results/people/*",
+        "https://*.linkedin.com/mynetwork/*"
+      ],
+      "js": ["tab/tab.es.js"]
+    }
+  ]
 }
