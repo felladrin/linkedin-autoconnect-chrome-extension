@@ -1,24 +1,14 @@
-import { ExtensionMessage } from "../../shared/enums/ExtensionMessage";
-import { autoConnectionStatusRequested } from "../events/autoConnectionStatusRequested";
+import { MessageId } from "../../shared/enums/MessageId";
 import { startButtonClicked } from "../events/startButtonClicked";
-import { getActiveTab } from "../functions/getActiveTab";
+import { guard } from "effector";
+import { chromePortStore } from "../../shared/stores/chromePortStore";
+import { isNull } from "is-what";
+import { postChromePortMessage } from "../../shared/effects/postChromePortMessage";
 
-startButtonClicked.watch(async () => {
-  const { id: activeTabId } = await getActiveTab();
-
-  if (!activeTabId) return;
-
-  chrome.tabs.sendMessage(
-    activeTabId,
-    ExtensionMessage.IsAutoConnectAvailable,
-    (isAvailable: boolean) => {
-      if (!isAvailable) {
-        alert("Error: Extension was not able to access the LinkedIn Page.");
-        return;
-      }
-
-      chrome.tabs.sendMessage(activeTabId, ExtensionMessage.StartAutoConnect);
-      autoConnectionStatusRequested();
-    }
-  );
+guard({
+  clock: startButtonClicked,
+  source: chromePortStore,
+  filter: (chromePort): chromePort is chrome.runtime.Port => !isNull(chromePort),
+}).watch((chromePort) => {
+  postChromePortMessage({ message: { id: MessageId.StartAutoConnect }, port: chromePort });
 });

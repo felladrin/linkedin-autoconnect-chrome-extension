@@ -1,3 +1,3 @@
-import { createEvent } from "effector";
+import { getActiveTab } from "../effects/getActiveTab";
 
-export const activeTabInfoReceived = createEvent<chrome.tabs.Tab>();
+export const activeTabInfoReceived = getActiveTab.doneData;

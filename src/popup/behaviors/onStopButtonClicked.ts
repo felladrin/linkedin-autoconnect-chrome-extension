@@ -1,13 +1,14 @@
-import { ExtensionMessage } from "../../shared/enums/ExtensionMessage";
-import { sample } from "effector";
-import { autoConnectionStatusRequested } from "../events/autoConnectionStatusRequested";
+import { MessageId } from "../../shared/enums/MessageId";
+import { guard } from "effector";
 import { stopButtonClicked } from "../events/stopButtonClicked";
-import { activeTabIdStore } from "../stores/activeTabIdStore";
+import { chromePortStore } from "../../shared/stores/chromePortStore";
+import { postChromePortMessage } from "../../shared/effects/postChromePortMessage";
+import { isNull } from "is-what";
 
-sample({
+guard({
   clock: stopButtonClicked,
-  source: activeTabIdStore,
-}).watch((activeTabId) => {
-  chrome.tabs.sendMessage(activeTabId, ExtensionMessage.StopAutoConnect);
-  autoConnectionStatusRequested();
+  source: chromePortStore,
+  filter: (chromePort): chromePort is chrome.runtime.Port => !isNull(chromePort),
+}).watch((chromePort) => {
+  postChromePortMessage({ message: { id: MessageId.StopAutoConnect }, port: chromePort });
 });

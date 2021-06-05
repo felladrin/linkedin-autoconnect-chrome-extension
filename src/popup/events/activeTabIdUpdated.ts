@@ -1,3 +1,7 @@
-import { createEvent } from "effector";
+import { guard } from "effector";
+import { isNumber } from "is-what";
+import { activeTabInfoReceived } from "./activeTabInfoReceived";
 
-export const activeTabIdUpdated = createEvent<number>();
+export const activeTabIdUpdated = guard(activeTabInfoReceived, { filter: ({ id }) => isNumber(id) }).map(
+  ({ id }) => id as number
+);

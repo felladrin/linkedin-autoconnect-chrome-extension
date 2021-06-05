@@ -1,7 +1,4 @@
-import { createStore } from "effector";
-import { autoConnectionStopped } from "../events/autoConnectionStopped";
-import { autoConnectionStarted } from "../events/autoConnectionStarted";
+import { restore } from "effector";
+import { runningStateUpdated } from "../events/runningStateUpdated";
 
-export const isAutoConnectionRunningStore = createStore(false)
-  .on(autoConnectionStarted, () => true)
-  .reset(autoConnectionStopped);
+export const isAutoConnectionRunningStore = restore(runningStateUpdated, false);
