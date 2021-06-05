@@ -1,6 +1,7 @@
 import { resolve } from "path";
 import { defineConfig } from "vite";
 
+// @ts-prune-ignore-next
 export default defineConfig({
   build: {
     lib: {
