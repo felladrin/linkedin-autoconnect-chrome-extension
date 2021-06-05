@@ -9,7 +9,6 @@
     "forceConsistentCasingInFileNames": true,
     "jsx": "react",
     "isolatedModules": true,
-    "types": ["vite/client"],
-    "typeRoots": ["./node_modules/@types"]
+    "typeRoots": ["./node_modules/@types", "./types"]
   }
 }
