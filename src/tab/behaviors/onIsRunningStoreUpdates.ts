@@ -1,5 +1,4 @@
 import { guard, sample } from "effector";
-import { isNull } from "is-what";
 import { postChromePortMessage } from "../../shared/effects/postChromePortMessage";
 import { MessageId } from "../../shared/enums/MessageId";
 import { chromePortStore } from "../../shared/stores/chromePortStore";
@@ -19,7 +18,7 @@ guard(
   }),
   {
     filter: (payload): payload is { chromePort: chrome.runtime.Port; isRunning: boolean } =>
-      !isNull(payload.chromePort),
+      payload.chromePort !== null,
   }
 ).watch(({ chromePort, isRunning }) => {
   postChromePortMessage({ message: { id: MessageId.RunningStateUpdated, content: isRunning }, port: chromePort });
