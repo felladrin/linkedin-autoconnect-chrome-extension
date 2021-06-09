@@ -14,23 +14,18 @@
     "url": "https://github.com/felladrin/linkedin-autoconnect-chrome-extension/issues"
   },
   "scripts": {
-    "watch": "run-s recreate-dist-folder copy-static-files-to-dist && run-p vite-html-watch vite-lib-watch",
-    "build": "run-s recreate-dist-folder copy-static-files-to-dist vite-html vite-lib zip-dist-folder",
-    "vite-html": "vite build --config vite-pages-config.ts",
-    "vite-lib": "vite build --config vite-tab-config.ts",
-    "vite-html-watch": "npm run vite-html -- --watch --mode development",
-    "vite-lib-watch": "npm run vite-lib -- --watch --mode development",
-    "copy-static-files-to-dist": "shx cp -r \"static/*\" \"dist\"",
-    "zip-dist-folder": "cd dist && bestzip linkedin-autoconnect-chrome-extension.zip *",
-    "recreate-dist-folder": "shx rm -rf dist && shx mkdir dist"
+    "start": "node --loader ts-node/esm scripts/start.ts",
+    "build": "node --loader ts-node/esm scripts/build.ts"
   },
   "devDependencies": {
+    "@types/archiver": "^5.1.0",
     "@types/chrome": "^0.0.144",
     "@types/node": "^15.12.2",
     "@types/react-dom": "^17.0.6",
-    "bestzip": "^2.2.0",
-    "npm-run-all": "^4.1.5",
-    "shx": "^0.3.3",
+    "@types/shelljs": "^0.8.8",
+    "archiver": "^5.3.0",
+    "shelljs": "^0.8.4",
+    "ts-node": "^10.0.0",
     "typescript": "^4.3.2",
     "vite": "^2.3.7"
   },
