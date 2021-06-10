@@ -5,5 +5,5 @@ import { executeVite } from "./functions/executeVite.js";
 (async () => {
   recreateDistFolder();
   copyStaticFilesToDist();
-  await executeVite({ watch: {}, mode: "development" });
+  await executeVite({ mode: "development" });
 })();

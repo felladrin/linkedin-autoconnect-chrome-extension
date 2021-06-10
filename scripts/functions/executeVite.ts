@@ -2,13 +2,15 @@ import { resolve } from "path";
 import { build, InlineConfig } from "vite";
 import { distPath, srcPath } from "../constants/paths.js";
 
-export function executeVite(options: { watch: {} | null; mode: string }) {
+export function executeVite(options: { mode: string }) {
   const commonConfig: InlineConfig = { mode: options.mode, clearScreen: false };
+  const watch = options.mode === "development" ? {} : null;
+
   return Promise.all([
     build({
       ...commonConfig,
       build: {
-        watch: options.watch,
+        watch,
         rollupOptions: {
           input: {
             popup: resolve(srcPath, "popup/popup.html"),
@@ -23,7 +25,7 @@ export function executeVite(options: { watch: {} | null; mode: string }) {
     build({
       ...commonConfig,
       build: {
-        watch: options.watch,
+        watch,
         lib: {
           entry: resolve(srcPath, "tab/tab.ts"),
           fileName: "tab",
