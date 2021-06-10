@@ -3,6 +3,4 @@ import { buttonClickRequested } from "../events/buttonClickRequested";
 import { searchPageLoaded } from "../events/pageLoaded";
 import { isRunningStore } from "../stores/isRunningStore";
 
-guard(searchPageLoaded, {
-  filter: isRunningStore,
-}).watch(() => buttonClickRequested());
+guard({ clock: searchPageLoaded, filter: isRunningStore, target: buttonClickRequested });
