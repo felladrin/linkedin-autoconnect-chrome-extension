@@ -7,8 +7,6 @@ export const {
   myNetworkPageLoaded,
   __: unidentifiedPageLoaded,
 } = split(windowLocationUpdated, {
-  searchPageLoaded: (windowLocation) =>
-    windowLocation.includes(LinkedInUrl.PatternOfSearchPage),
-  myNetworkPageLoaded: (windowLocation) =>
-    windowLocation.includes(LinkedInUrl.PatternOfMyNetworkPage),
+  searchPageLoaded: (windowLocation) => windowLocation.includes(LinkedInUrl.PatternOfSearchPage),
+  myNetworkPageLoaded: (windowLocation) => windowLocation.includes(LinkedInUrl.PatternOfMyNetworkPage),
 });
