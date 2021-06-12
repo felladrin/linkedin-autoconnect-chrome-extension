@@ -1,6 +1,6 @@
 import { createEffect } from "effector";
-import { LinkedInSelector } from "../enums/LinkedInSelector";
+import { LinkedInCssSelector } from "../../shared/enums/LinkedInCssSelector";
 
 export const dismissSendInviteDialog = createEffect(() => {
-  document.querySelector<HTMLButtonElement>(LinkedInSelector.DismissSendInviteDialogButton)?.click();
+  document.querySelector<HTMLButtonElement>(LinkedInCssSelector.DismissButtonFromSendInviteModal)?.click();
 });

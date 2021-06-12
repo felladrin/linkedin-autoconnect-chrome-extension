@@ -1,6 +1,6 @@
 import { combine, guard, sample } from "effector";
 import { LinkedInPage } from "../../shared/enums/LinkedInPage";
-import { LinkedInSelector } from "../enums/LinkedInSelector";
+import { LinkedInCssSelector } from "../../shared/enums/LinkedInCssSelector";
 import { buttonClickRequested } from "../events/buttonClickRequested";
 import { isRunningStore } from "../stores/isRunningStore";
 import { currentLinkedInPageStore } from "../stores/currentLinkedInPageStore";
@@ -15,7 +15,7 @@ sample({
   }),
   fn: ({ currentLinkedInPage }) =>
     currentLinkedInPage === LinkedInPage.MyNetwork
-      ? LinkedInSelector.ConnectButtonsFromMyNetworkPage
-      : LinkedInSelector.ConnectButtonsFromSearchPage,
+      ? LinkedInCssSelector.ConnectButtonFromMyNetworkPage
+      : LinkedInCssSelector.ConnectButtonFromSearchPage,
   target: findNextAvailableConnectButton,
 });

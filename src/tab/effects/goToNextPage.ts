@@ -1,6 +1,6 @@
 import { createEffect } from "effector";
-import { LinkedInSelector } from "../enums/LinkedInSelector";
+import { LinkedInCssSelector } from "../../shared/enums/LinkedInCssSelector";
 
 export const goToNextPage = createEffect(() => {
-  document.querySelector<HTMLButtonElement>(LinkedInSelector.NextButton)?.click();
+  document.querySelector<HTMLButtonElement>(LinkedInCssSelector.NextPageButton)?.click();
 });
