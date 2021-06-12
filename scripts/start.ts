@@ -2,8 +2,6 @@ import { copyStaticFilesToDist } from "./functions/copyStaticFilesToDist.js";
 import { recreateDistFolder } from "./functions/recreateDistFolder.js";
 import { executeVite } from "./functions/executeVite.js";
 
-(async () => {
-  recreateDistFolder();
-  copyStaticFilesToDist();
-  await executeVite({ mode: "development" });
-})();
+recreateDistFolder();
+copyStaticFilesToDist();
+executeVite({ mode: "development" });
