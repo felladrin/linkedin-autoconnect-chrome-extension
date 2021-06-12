@@ -1,6 +1,9 @@
+import { sample } from "effector";
 import { loadOptions } from "../effects/loadOptions";
 import { maximumAutoConnectionsPerSessionChanged } from "../events/maximumAutoConnectionsPerSessionChanged";
 
-loadOptions.doneData.watch(({ maximumAutoConnectionsPerSession }) => {
-  maximumAutoConnectionsPerSessionChanged(maximumAutoConnectionsPerSession);
+sample({
+  clock: loadOptions.doneData,
+  fn: ({ maximumAutoConnectionsPerSession }) => maximumAutoConnectionsPerSession,
+  target: maximumAutoConnectionsPerSessionChanged
 });

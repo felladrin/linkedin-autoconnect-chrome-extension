@@ -1,14 +1,13 @@
 import { optionsPageOpened } from "../events/optionsPageOpened";
-import React from "react";
-import { render } from "react-dom";
-import { OptionsPage } from "../components/OptionsPage";
-import { combine, sample } from "effector";
+import { combine, forward, sample } from "effector";
 import { maximumAutoConnectionsPerSessionStore } from "../../shared/stores/maximumAutoConnectionsPerSessionStore";
 import { loadOptions } from "../../shared/effects/loadOptions";
+import { renderOptionsPage } from "../effects/renderOptionsPage";
 
-optionsPageOpened.watch(() =>
-  render(React.createElement(OptionsPage), document.body.appendChild(document.createElement("div")))
-);
+forward({
+  from: optionsPageOpened,
+  to: renderOptionsPage,
+});
 
 sample({
   clock: optionsPageOpened,

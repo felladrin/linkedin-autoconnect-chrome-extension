@@ -1,12 +1,8 @@
 import { saveOptions } from "../effects/saveOptions";
-import { optionsSavedToast } from "../constants/optionsSavedToast";
+import { forward } from "effector";
+import { displayOptionsSavedToast } from "../effects/displayOptionsSavedToast";
 
-saveOptions.done.watch(() =>
-  optionsSavedToast({
-    position: "top",
-    title: "Options saved!",
-    status: "success",
-    duration: 2000,
-    isClosable: true,
-  })
-);
+forward({
+  from: saveOptions.doneData,
+  to: displayOptionsSavedToast,
+});
