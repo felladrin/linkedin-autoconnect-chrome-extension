@@ -1,0 +1,4 @@
+tasks:
+  - init: npm ci
+    command: npm start
+
