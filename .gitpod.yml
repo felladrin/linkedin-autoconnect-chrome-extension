@@ -4,6 +4,7 @@ tasks:
   - name: Google Chrome
     command: >
       gp sync-await start &&
+      sleep 10 &&
       google-chrome --no-first-run --disable-dev-shm-usage --start-maximized --load-extension=/workspace/linkedin-autoconnect-chrome-extension/dist https://www.linkedin.com/
   - name: Vite Dev Server
     init: npm ci
