@@ -1,6 +1,6 @@
 import randomInt from "random-int";
 import { buttonClicked } from "../events/buttonClicked";
-import { confirmSendInviteDialog } from "../effects/dismissSendInviteDialog";
+import { confirmSendInviteDialog } from "../effects/confirmSendInviteDialog";
 import { combine, guard, sample } from "effector";
 import { delayNextClick } from "../effects/delayNextClick";
 import { stopped } from "../events/stopped";
