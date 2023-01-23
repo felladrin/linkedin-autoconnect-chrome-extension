@@ -30,7 +30,7 @@
     "vite": "^2.9.13"
   },
   "dependencies": {
-    "@chakra-ui/react": "^1.6.3",
+    "@chakra-ui/react": "^2.0.0",
     "@emotion/react": "^11.4.0",
     "@emotion/styled": "^11.3.0",
     "@types/react": "^17.0.11",
