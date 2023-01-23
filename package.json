@@ -36,7 +36,7 @@
     "@types/react": "^18.0.0",
     "effector": "^22.0.0",
     "effector-react": "^22.4.0",
-    "framer-motion": "^4.1.17",
+    "framer-motion": "^8.0.0",
     "random-int": "^3.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
