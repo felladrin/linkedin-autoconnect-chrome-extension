@@ -1,10 +1,10 @@
 import { createStandaloneToast } from "@chakra-ui/react";
 import { createEffect } from "effector";
 
-const optionsSavedToast = createStandaloneToast();
+export const {ToastContainer, toast} = createStandaloneToast();
 
 export const displayOptionsSavedToast = createEffect(() =>
-  optionsSavedToast({
+toast({
     position: "top",
     title: "Options saved!",
     status: "success",

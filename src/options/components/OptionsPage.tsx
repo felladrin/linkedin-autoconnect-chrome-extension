@@ -20,12 +20,14 @@ import { maximumAutoConnectionsPerSessionChanged } from "../../shared/events/max
 import { optionsSubmitted } from "../events/optionsSubmitted";
 import { maximumAutoConnectionsPerSessionStore } from "../../shared/stores/maximumAutoConnectionsPerSessionStore";
 import { darkChakraTheme } from "../../shared/constants/darkChakraTheme";
+import { ToastContainer } from "../effects/displayOptionsSavedToast";
 
 export function OptionsPage() {
   const maximumAutoConnectionsPerSession = useStore(maximumAutoConnectionsPerSessionStore);
-
+  ToastContainer;
   return (
     <ChakraProvider theme={darkChakraTheme}>
+      <ToastContainer />
       <Container backgroundColor="gray.700" padding="5" borderRadius="md" marginY="5">
         <VStack spacing={4} align="stretch">
           <Box>

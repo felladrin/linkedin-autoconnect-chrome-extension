@@ -30,7 +30,7 @@ export function StartStopButton() {
         <Button
           colorScheme={isAutoConnectionRunning ? "red" : "green"}
           onClick={() => (isAutoConnectionRunning ? stopButtonClicked() : startButtonClicked())}
-          isFullWidth
+          width="full"
         >
           {isAutoConnectionRunning ? "STOP" : "START"} CONNECTING
         </Button>
