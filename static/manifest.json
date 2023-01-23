@@ -19,7 +19,7 @@
   "content_scripts": [
     {
       "matches": ["https://*.linkedin.com/search/results/people/*", "https://*.linkedin.com/mynetwork/*"],
-      "js": ["tab/tab.es.js"]
+      "js": ["tab/tab.js"]
     }
   ]
 }
