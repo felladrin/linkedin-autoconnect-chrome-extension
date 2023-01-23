@@ -8,12 +8,12 @@ export function PageSelection() {
   return (
     <List spacing={3}>
       <ListItem>
-        <Button onClick={() => openMyNetworkPage()} leftIcon={<MdPeople />} isFullWidth>
+        <Button onClick={() => openMyNetworkPage()} leftIcon={<MdPeople />} width="full">
           People You May Know
         </Button>
       </ListItem>
       <ListItem>
-        <Button onClick={() => openSearchPeoplePage()} leftIcon={<MdSearch />} isFullWidth>
+        <Button onClick={() => openSearchPeoplePage()} leftIcon={<MdSearch />} width="full">
           Search People
         </Button>
       </ListItem>
