@@ -34,7 +34,7 @@
     "@emotion/react": "^11.4.0",
     "@emotion/styled": "^11.3.0",
     "@types/react": "^18.0.0",
-    "effector": "^21.8.12",
+    "effector": "^22.0.0",
     "effector-react": "^21.3.2",
     "framer-motion": "^4.1.17",
     "random-int": "^3.0.0",
