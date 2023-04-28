@@ -3,7 +3,9 @@ import { recreateDistFolder } from "./functions/recreateDistFolder.js";
 import { executeVite } from "./functions/executeVite.js";
 import { updateVersionInManifest } from "./functions/updateVersionInManifest.js";
 
-recreateDistFolder();
-copyStaticFilesToDist();
-await updateVersionInManifest();
-await executeVite({ mode: "development" });
+(async () => {
+  recreateDistFolder();
+  copyStaticFilesToDist();
+  await updateVersionInManifest();
+  await executeVite({ mode: "development" });
+})();
