@@ -4,7 +4,7 @@ This extensions is for every LinkedIn user who is tired of manually clicking 'Co
 
 ## Install
 
-1. Download `linkedin-autoconnect-chrome-extension.zip` from the [latest release of LinkedIn AutoConnect](https://github.com/felladrin/linkedin-autoconnect-chrome-extension/releases) and unzip it.
+1. Download `linkedin-autoconnect-chrome-extension.zip` from the [latest release of LinkedIn AutoConnect](https://github.com/felladrin/linkedin-autoconnect-chrome-extension/releases/latest) and unzip it.
 2. Open Google Chrome, type `chrome://extensions` on your address bar and hit Enter.
 3. On the Chrome Extensions page, check the `Developer mode` box. New buttons will be displayed.
 4. Click on the button `Load unpacked`.
