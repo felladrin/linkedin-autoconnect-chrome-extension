@@ -1,259 +1,194 @@
-import {
-  attach,
-  combine,
-  createEffect,
-  createEvent,
-  createStore,
-  forward,
-  guard,
-  restore,
-  sample,
-  split,
-} from "effector";
+import { createPubSub } from "create-pubsub";
 import randomInt from "random-int";
 import {
-  ChromePortMessage,
   LinkedInCssSelector,
   LinkedInPage,
   LinkedInUrl,
-  Message,
   MessageId,
-  chromePortConnected,
-  chromePortStore,
   delay,
-  extensionMessageReceived,
+  emitChromePortConnected,
+  getChromePort,
+  getMaximumAutoConnectionsPerSession,
   loadOptions,
-  maximumAutoConnectionsPerSessionStore,
+  onChromePortConnected,
+  onChromePortMessageReceived,
   postChromePortMessage,
   startListeningToChromePortMessages,
 } from "./shared";
 
-const clickButton = createEffect((button: HTMLButtonElement) => {
+const maximumAttemptsForFindingHtmlElements = 5;
+const minimumDelayBetweenConnectClicks = 1500;
+const maximumDelayBetweenConnectClicks = 3000;
+const oneSecondIntervalInMilliseconds = 1000;
+const halfSecondIntervalInMilliseconds = 500;
+const [emitNextAvailableConnectButtonFound, onNextAvailableConnectButtonFound] = createPubSub<HTMLButtonElement>();
+const [emitNextAvailableConnectButtonNotFound, onNextAvailableConnectButtonNotFound] = createPubSub();
+const [emitConnectButtonClicked, onConnectButtonClicked] = createPubSub();
+const [emitOneSecondIntervalTicked, onOneSecondIntervalTicked] = createPubSub();
+const [emitStarted, onStarted] = createPubSub();
+const [emitStopped, onStopped] = createPubSub();
+const [emitWindowLocationUpdated, onWindowLocationUpdated, getLastWindowLocation] = createPubSub("");
+const [emitSearchPageLoaded, onSearchPageLoaded] = createPubSub();
+const [emitMyNetworkPageLoaded, onMyNetworkPageLoaded] = createPubSub();
+const [emitUnidentifiedPageLoaded, onUnidentifiedPageLoaded] = createPubSub();
+const [emitButtonClicksCount, onButtonClicksCountUpdated, getButtonClicksCount] = createPubSub(0);
+const [emitCurrentLinkedInPage, , getCurrentLinkedInPage] = createPubSub(LinkedInPage.Unidentified);
+const [emitIsRunning, onIsRunningUpdated, getIsRunning] = createPubSub(false);
+
+function clickConnectButton(button: HTMLButtonElement) {
   button.focus();
   button.click();
   button.setAttribute("disabled", "disabled");
-});
+  emitConnectButtonClicked();
+}
 
-const confirmSendInviteDialog = createEffect(
-  () =>
-    new Promise((resolve) => {
-      let attempts = 0;
+function confirmSendInviteModal() {
+  return new Promise((resolve) => {
+    let attempts = 0;
 
-      const interval = setInterval(() => {
-        const sendButton = document.querySelector<HTMLButtonElement>(LinkedInCssSelector.SendButtonFromSendInviteModal);
+    const interval = setInterval(() => {
+      const sendButton = document.querySelector<HTMLButtonElement>(LinkedInCssSelector.SendButtonFromSendInviteModal);
 
-        sendButton?.click();
+      sendButton?.click();
 
-        if (sendButton || ++attempts > 5) {
-          clearInterval(interval);
-          resolve(null);
-        }
-      }, 500);
-    })
-);
+      if (sendButton || ++attempts > maximumAttemptsForFindingHtmlElements) {
+        clearInterval(interval);
+        resolve(null);
+      }
+    }, halfSecondIntervalInMilliseconds);
+  });
+}
 
-const delayNextClick = attach({ effect: delay });
+function findNextAvailableConnectButton(selector: LinkedInCssSelector) {
+  let attempts = 0;
 
-const findNextAvailableConnectButton = createEffect(
-  (selector: LinkedInCssSelector) =>
-    new Promise((resolve) => {
-      let attempts = 0;
+  const interval = setInterval(() => {
+    window.scrollTo(0, document.body.scrollHeight);
 
-      const interval = setInterval(() => {
-        window.scrollTo(0, document.body.scrollHeight);
+    const nextAvailableConnectButton = document.querySelector<HTMLButtonElement>(selector);
 
-        const nextAvailableConnectButton = document.querySelector<HTMLButtonElement>(selector);
+    if (nextAvailableConnectButton) {
+      clearInterval(interval);
+      emitNextAvailableConnectButtonFound(nextAvailableConnectButton);
+    } else if (++attempts > maximumAttemptsForFindingHtmlElements) {
+      clearInterval(interval);
+      emitNextAvailableConnectButtonNotFound();
+    }
+  }, halfSecondIntervalInMilliseconds);
+}
 
-        if (nextAvailableConnectButton) {
-          clearInterval(interval);
-          resolve(nextAvailableConnectButton);
-        } else if (++attempts > 5) {
-          clearInterval(interval);
-          resolve(null);
-        }
-      }, 500);
-    })
-);
-
-const goToNextPage = createEffect(() => {
+function goToNextPage() {
   document.querySelector<HTMLButtonElement>(LinkedInCssSelector.NextPageButton)?.click();
-});
+}
 
-const startListeningToChromePortConnections = createEffect(() =>
-  chrome.runtime.onConnect.addListener(chromePortConnected)
-);
+function startListeningToChromePortConnections() {
+  return chrome.runtime.onConnect.addListener(emitChromePortConnected);
+}
 
-const startOneSecondIntervalTicker = createEffect(() => setInterval(oneSecondIntervalTicked, 1000));
+function startOneSecondIntervalTicker() {
+  return setInterval(emitOneSecondIntervalTicked, oneSecondIntervalInMilliseconds);
+}
 
-const buttonClicked = clickButton.done;
-
-const buttonClickRequested = createEvent();
-
-const { nextAvailableConnectButtonFound, nextAvailableConnectButtonNotFound } = split(
-  findNextAvailableConnectButton.doneData,
-  {
-    nextAvailableConnectButtonFound: (button): button is HTMLButtonElement => button !== null,
-    nextAvailableConnectButtonNotFound: (button): button is null => button === null,
+function searchForConnectButtonIfRunning() {
+  const isRunning = getIsRunning();
+  const currentLinkedInPage = getCurrentLinkedInPage();
+  if (isRunning && [LinkedInPage.MyNetwork, LinkedInPage.SearchPeople].includes(currentLinkedInPage)) {
+    findNextAvailableConnectButton(
+      currentLinkedInPage === LinkedInPage.MyNetwork
+        ? LinkedInCssSelector.ConnectButtonFromMyNetworkPage
+        : LinkedInCssSelector.ConnectButtonFromSearchPage
+    );
   }
-);
+}
 
-const oneSecondIntervalTicked = createEvent();
+(async () => {
+  await loadOptions();
 
-const started = createEvent();
+  startListeningToChromePortConnections();
 
-const stopped = createEvent();
+  startOneSecondIntervalTicker();
 
-const tabScriptInjected = createEvent();
+  onWindowLocationUpdated((windowLocation) => {
+    if (windowLocation.includes(LinkedInUrl.PatternOfSearchPage)) {
+      emitSearchPageLoaded();
+    } else if (windowLocation.includes(LinkedInUrl.PatternOfMyNetworkPage)) {
+      emitMyNetworkPageLoaded();
+    } else {
+      emitUnidentifiedPageLoaded();
+    }
+  });
 
-const windowLocationUpdated = createEvent<string>();
+  onStarted(() => emitIsRunning(true));
 
-const {
-  searchPageLoaded,
-  myNetworkPageLoaded,
-  __: unidentifiedPageLoaded,
-} = split(windowLocationUpdated, {
-  searchPageLoaded: (windowLocation) => windowLocation.includes(LinkedInUrl.PatternOfSearchPage),
-  myNetworkPageLoaded: (windowLocation) => windowLocation.includes(LinkedInUrl.PatternOfMyNetworkPage),
-});
+  onStopped(() => emitIsRunning(false));
 
-const buttonClicksCountStore = createStore(0).on(buttonClicked, (state) => state + 1);
+  onUnidentifiedPageLoaded(() => emitIsRunning(false));
 
-const currentLinkedInPageStore = createStore(LinkedInPage.Unidentified)
-  .on(searchPageLoaded, () => LinkedInPage.SearchPeople)
-  .on(myNetworkPageLoaded, () => LinkedInPage.MyNetwork);
+  onConnectButtonClicked(async () => {
+    emitButtonClicksCount(getButtonClicksCount() + 1);
+    confirmSendInviteModal();
+    await delay(randomInt(minimumDelayBetweenConnectClicks, maximumDelayBetweenConnectClicks));
+    if (getIsRunning()) {
+      if (getButtonClicksCount() >= Number(getMaximumAutoConnectionsPerSession())) {
+        emitStopped();
+      } else {
+        searchForConnectButtonIfRunning();
+      }
+    }
+  });
 
-const isRunningStore = createStore(false)
-  .on(started, () => true)
-  .reset([stopped, unidentifiedPageLoaded]);
+  onButtonClicksCountUpdated((buttonClicksCount) => {
+    const port = getChromePort();
+    if (port) {
+      postChromePortMessage({ message: { id: MessageId.ButtonClicksCountUpdated, content: buttonClicksCount }, port });
+    }
+  });
 
-const lastWindowLocationStore = restore(windowLocationUpdated, "");
+  onChromePortConnected((port) => {
+    postChromePortMessage({ message: { id: MessageId.RunningStateUpdated, content: getIsRunning() }, port });
+    postChromePortMessage({
+      message: { id: MessageId.ButtonClicksCountUpdated, content: getButtonClicksCount() },
+      port,
+    });
+  });
 
-sample({ clock: buttonClicked, target: confirmSendInviteDialog });
+  onChromePortMessageReceived(({ message }) => {
+    switch (message.id) {
+      case MessageId.StartAutoConnect:
+        return emitStarted();
+      case MessageId.StopAutoConnect:
+        return emitStopped();
+    }
+  });
 
-sample({
-  clock: buttonClicked,
-  fn: () => randomInt(1500, 3000),
-  target: delayNextClick,
-});
+  onIsRunningUpdated((isRunning) => {
+    const port = getChromePort();
 
-guard({
-  clock: buttonClicked,
-  source: combine({
-    buttonClicksCount: buttonClicksCountStore,
-    maximumAutoConnectionsPerSession: maximumAutoConnectionsPerSessionStore,
-  }),
-  filter: ({ buttonClicksCount, maximumAutoConnectionsPerSession }) =>
-    buttonClicksCount >= Number(maximumAutoConnectionsPerSession),
-  target: stopped,
-});
+    if (port) postChromePortMessage({ message: { id: MessageId.RunningStateUpdated, content: isRunning }, port });
 
-sample({
-  clock: guard({
-    clock: buttonClickRequested,
-    source: combine({ isRunning: isRunningStore, currentLinkedInPage: currentLinkedInPageStore }),
-    filter: ({ isRunning, currentLinkedInPage }) =>
-      isRunning && [LinkedInPage.MyNetwork, LinkedInPage.SearchPeople].includes(currentLinkedInPage),
-  }),
-  fn: ({ currentLinkedInPage }) =>
-    currentLinkedInPage === LinkedInPage.MyNetwork
-      ? LinkedInCssSelector.ConnectButtonFromMyNetworkPage
-      : LinkedInCssSelector.ConnectButtonFromSearchPage,
-  target: findNextAvailableConnectButton,
-});
+    searchForConnectButtonIfRunning();
+  });
 
-guard({
-  clock: sample({
-    clock: buttonClicksCountStore.updates,
-    source: chromePortStore,
-    fn: (chromePort, buttonClicksCount) => ({
-      message: { id: MessageId.ButtonClicksCountUpdated, content: buttonClicksCount } as Message,
-      port: chromePort,
-    }),
-  }),
-  filter: (payload): payload is ChromePortMessage => payload.port !== null,
-  target: postChromePortMessage,
-});
+  onOneSecondIntervalTicked(() => {
+    if (window.location.href !== getLastWindowLocation()) emitWindowLocationUpdated(window.location.href);
+  });
 
-forward({ from: chromePortConnected, to: startListeningToChromePortMessages });
+  onChromePortConnected((port) => {
+    postChromePortMessage({ message: { id: MessageId.ConnectionEstablished }, port });
+    startListeningToChromePortMessages(port);
+  });
 
-forward({
-  from: chromePortConnected.map((port) => ({ message: { id: MessageId.ConnectionEstablished }, port })),
-  to: postChromePortMessage,
-});
+  onNextAvailableConnectButtonFound(clickConnectButton);
 
-sample({
-  clock: chromePortConnected,
-  source: isRunningStore,
-  fn: (isRunning, port) => ({ message: { id: MessageId.RunningStateUpdated, content: isRunning }, port }),
-  target: postChromePortMessage,
-});
+  onNextAvailableConnectButtonNotFound(goToNextPage);
 
-sample({
-  clock: chromePortConnected,
-  source: buttonClicksCountStore,
-  fn: (buttonClicksCount, port) => ({
-    message: { id: MessageId.ButtonClicksCountUpdated, content: buttonClicksCount },
-    port,
-  }),
-  target: postChromePortMessage,
-});
+  onMyNetworkPageLoaded(() => {
+    emitCurrentLinkedInPage(LinkedInPage.MyNetwork);
+    searchForConnectButtonIfRunning();
+  });
 
-forward({ from: delayNextClick.doneData, to: buttonClickRequested });
-
-sample({
-  clock: extensionMessageReceived[MessageId.StartAutoConnect],
-  target: started,
-});
-
-sample({
-  clock: extensionMessageReceived[MessageId.StopAutoConnect],
-  target: stopped,
-});
-
-guard({ clock: isRunningStore.updates, filter: (isRunning) => isRunning, target: buttonClickRequested });
-
-guard({
-  clock: sample({
-    clock: isRunningStore.updates,
-    source: chromePortStore,
-    fn: (chromePort, isRunning) => ({
-      message: { id: MessageId.RunningStateUpdated, content: isRunning } as Message,
-      port: chromePort,
-    }),
-  }),
-  filter: (payload): payload is ChromePortMessage => payload.port !== null,
-  target: postChromePortMessage,
-});
-
-guard({ clock: myNetworkPageLoaded, filter: isRunningStore, target: buttonClickRequested });
-
-forward({
-  from: nextAvailableConnectButtonFound,
-  to: clickButton,
-});
-
-sample({ clock: nextAvailableConnectButtonNotFound, target: goToNextPage });
-
-guard({
-  clock: oneSecondIntervalTicked,
-  source: lastWindowLocationStore,
-  filter: (lastWindowLocation) => window.location.href !== lastWindowLocation,
-  target: windowLocationUpdated.prepend(() => window.location.href),
-});
-
-guard({ clock: searchPageLoaded, filter: isRunningStore, target: buttonClickRequested });
-
-forward({
-  from: tabScriptInjected,
-  to: [startListeningToChromePortConnections, startOneSecondIntervalTicker],
-});
-
-sample({
-  clock: tabScriptInjected,
-  source: combine({
-    maximumAutoConnectionsPerSession: maximumAutoConnectionsPerSessionStore,
-  }),
-  target: loadOptions,
-});
-
-tabScriptInjected();
+  onSearchPageLoaded(() => {
+    emitCurrentLinkedInPage(LinkedInPage.SearchPeople);
+    searchForConnectButtonIfRunning();
+  });
+})();

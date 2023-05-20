@@ -15,28 +15,41 @@ import {
   VStack,
   createStandaloneToast,
 } from "@chakra-ui/react";
-import { combine, createEffect, createEvent, forward, sample } from "effector";
-import { useStore } from "effector-react";
+import { createPubSub } from "create-pubsub";
+import { usePubSub } from "create-pubsub/react";
 import { render } from "react-dom";
-import { darkChakraTheme } from "./shared";
-import { loadOptions } from "./shared";
-import { maximumAutoConnectionsPerSessionChanged } from "./shared";
-import { maximumAutoConnectionsPerSessionStore } from "./shared";
+import {
+  darkChakraTheme,
+  getMaximumAutoConnectionsPerSession,
+  loadOptions,
+  maximumAutoConnectionsPerSessionStorePubSub,
+} from "./shared";
 
-const optionsSubmitted = createEvent();
+const [emitOptionsPageOpened, onOptionsPageOpened] = createPubSub();
+const [emitOptionsSubmitted, onOptionsSubmitted] = createPubSub();
+const { ToastContainer, toast } = createStandaloneToast();
 
-const optionsPageOpened = createEvent();
+function displayOptionsSavedToast() {
+  return toast({
+    position: "top",
+    title: "Options saved!",
+    status: "success",
+    duration: 2000,
+    isClosable: true,
+  });
+}
 
-const saveOptions = createEffect(
-  (options: { maximumAutoConnectionsPerSession: string }) =>
-    new Promise<void>((resolve) => {
-      chrome.storage.sync.set(options, resolve);
-    })
-);
+async function saveOptions(options: { maximumAutoConnectionsPerSession: string }) {
+  return new Promise<void>((resolve) => {
+    chrome.storage.sync.set(options, resolve);
+  });
+}
 
 function OptionsPage() {
-  const maximumAutoConnectionsPerSession = useStore(maximumAutoConnectionsPerSessionStore);
-  ToastContainer;
+  const [maximumAutoConnectionsPerSession, setMaximumAutoConnectionsPerSession] = usePubSub(
+    maximumAutoConnectionsPerSessionStorePubSub
+  );
+
   return (
     <ChakraProvider theme={darkChakraTheme}>
       <ToastContainer />
@@ -50,7 +63,7 @@ function OptionsPage() {
           <Box>
             <FormControl>
               <FormLabel>Maximum auto-connections per session</FormLabel>
-              <NumberInput value={maximumAutoConnectionsPerSession} onChange={maximumAutoConnectionsPerSessionChanged}>
+              <NumberInput value={maximumAutoConnectionsPerSession} onChange={setMaximumAutoConnectionsPerSession}>
                 <NumberInputField />
                 <NumberInputStepper>
                   <NumberIncrementStepper />
@@ -61,7 +74,7 @@ function OptionsPage() {
             </FormControl>
           </Box>
           <Box>
-            <Button colorScheme="blue" onClick={() => optionsSubmitted()}>
+            <Button colorScheme="blue" onClick={() => emitOptionsSubmitted()}>
               Save Options
             </Button>
           </Box>
@@ -71,46 +84,14 @@ function OptionsPage() {
   );
 }
 
-const renderOptionsPage = createEffect(() =>
-  render(<OptionsPage />, document.body.appendChild(document.createElement("div")))
-);
-
-const { ToastContainer, toast } = createStandaloneToast();
-
-const displayOptionsSavedToast = createEffect(() =>
-  toast({
-    position: "top",
-    title: "Options saved!",
-    status: "success",
-    duration: 2000,
-    isClosable: true,
-  })
-);
-
-forward({
-  from: saveOptions.doneData,
-  to: displayOptionsSavedToast,
+onOptionsSubmitted(async () => {
+  await saveOptions({ maximumAutoConnectionsPerSession: getMaximumAutoConnectionsPerSession() });
+  displayOptionsSavedToast();
 });
 
-sample({
-  clock: optionsSubmitted,
-  source: combine({
-    maximumAutoConnectionsPerSession: maximumAutoConnectionsPerSessionStore,
-  }),
-  target: saveOptions,
+onOptionsPageOpened(async () => {
+  await loadOptions();
+  render(<OptionsPage />, document.body.appendChild(document.createElement("div")));
 });
 
-forward({
-  from: optionsPageOpened,
-  to: renderOptionsPage,
-});
-
-sample({
-  clock: optionsPageOpened,
-  source: combine({
-    maximumAutoConnectionsPerSession: maximumAutoConnectionsPerSessionStore,
-  }),
-  target: loadOptions,
-});
-
-optionsPageOpened();
+emitOptionsPageOpened();

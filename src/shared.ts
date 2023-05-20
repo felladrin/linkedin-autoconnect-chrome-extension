@@ -1,5 +1,11 @@
 import { extendTheme } from "@chakra-ui/react";
-import { createEffect, createEvent, restore, sample, split } from "effector";
+import { createPubSub } from "create-pubsub";
+
+export const [emitChromePortMessageReceived, onChromePortMessageReceived] = createPubSub<ChromePortMessage>();
+export const [emitChromePortConnected, onChromePortConnected, getChromePort] = createPubSub<chrome.runtime.Port>();
+export const maximumAutoConnectionsPerSessionStorePubSub = createPubSub("100");
+export const [emitMaximumAutoConnectionsPerSessionChanged, , getMaximumAutoConnectionsPerSession] =
+  maximumAutoConnectionsPerSessionStorePubSub;
 
 export interface Message {
   id: MessageId;
@@ -14,7 +20,7 @@ export interface ChromePortMessage {
 export enum LinkedInCssSelector {
   NextPageButton = "button.artdeco-pagination__button--next",
   ConnectButtonFromMyNetworkPage = "div.discover-entity-type-card__bottom-container button.ember-view:enabled:not(.artdeco-button--muted):not(.artdeco-button--full)",
-  ConnectButtonFromSearchPage = "li.reusable-search__result-container div.entity-result__actions > div > button.ember-view:enabled:not(.artdeco-button--muted)",
+  ConnectButtonFromSearchPage = "li.reusable-search__result-container div.entity-result__actions > div > button.ember-view:enabled:not(.artdeco-button--muted):not([data-test-reusable-search-primary-action])",
   SendButtonFromSendInviteModal = "div.send-invite button.artdeco-button--primary",
 }
 
@@ -39,55 +45,32 @@ export enum MessageId {
   StopAutoConnect,
 }
 
-export const chromePortConnected = createEvent<chrome.runtime.Port>();
+export function delay(milliseconds: number) {
+  return new Promise<void>((resolve) => setTimeout(resolve, milliseconds));
+}
 
-export const chromePortMessageReceived = createEvent<ChromePortMessage>();
+export async function loadOptions() {
+  const options = { maximumAutoConnectionsPerSession: getMaximumAutoConnectionsPerSession() };
+  const { maximumAutoConnectionsPerSession } = await new Promise<typeof options>((resolve) => {
+    chrome.storage.sync.get(options, (items) => resolve(items as typeof options));
+  });
+  emitMaximumAutoConnectionsPerSessionChanged(maximumAutoConnectionsPerSession);
+}
 
-export const extensionMessageReceived = split(chromePortMessageReceived, {
-  [MessageId.ConnectionEstablished]: ({ message }) => message.id === MessageId.ConnectionEstablished,
-  [MessageId.RunningStateUpdated]: ({ message }) => message.id === MessageId.RunningStateUpdated,
-  [MessageId.ButtonClicksCountUpdated]: ({ message }) => message.id === MessageId.ButtonClicksCountUpdated,
-  [MessageId.StartAutoConnect]: ({ message }) => message.id === MessageId.StartAutoConnect,
-  [MessageId.StopAutoConnect]: ({ message }) => message.id === MessageId.StopAutoConnect,
-});
-
-export const maximumAutoConnectionsPerSessionChanged = createEvent<string>();
-
-export const delay = createEffect(
-  (milliseconds: number) => new Promise<void>((resolve) => setTimeout(resolve, milliseconds))
-);
-
-export const loadOptions = createEffect(
-  (options: { maximumAutoConnectionsPerSession: string }) =>
-    new Promise<typeof options>((resolve) => {
-      chrome.storage.sync.get(options, (items) => resolve(items as typeof options));
-    })
-);
-
-export const postChromePortMessage = createEffect((chromePortMessage: ChromePortMessage) => {
+export function postChromePortMessage(chromePortMessage: ChromePortMessage) {
   const { message, port } = chromePortMessage;
   port.postMessage(message);
-});
+}
 
-export const startListeningToChromePortMessages = createEffect((port: chrome.runtime.Port) => {
+export function startListeningToChromePortMessages(port: chrome.runtime.Port) {
   port.onMessage.addListener((message) => {
-    chromePortMessageReceived({ message, port });
+    emitChromePortMessageReceived({ message, port });
   });
-});
+}
 
 export const darkChakraTheme = extendTheme({
   config: {
     useSystemColorMode: false,
     initialColorMode: "dark",
   },
-});
-
-export const chromePortStore = restore(chromePortConnected, null);
-
-export const maximumAutoConnectionsPerSessionStore = restore(maximumAutoConnectionsPerSessionChanged, "100");
-
-sample({
-  clock: loadOptions.doneData,
-  fn: ({ maximumAutoConnectionsPerSession }) => maximumAutoConnectionsPerSession,
-  target: maximumAutoConnectionsPerSessionChanged,
 });

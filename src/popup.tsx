@@ -13,24 +13,57 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { combine, createEffect, createEvent, createStore, forward, guard, restore, sample } from "effector";
-import { useStore } from "effector-react";
+import { createPubSub } from "create-pubsub";
+import { usePubSub } from "create-pubsub/react";
 import { render } from "react-dom";
 import { MdPeople, MdSearch, MdSettings } from "react-icons/md";
 import {
-  ChromePortMessage,
   LinkedInUrl,
-  Message,
   MessageId,
-  chromePortConnected,
-  chromePortStore,
   darkChakraTheme,
-  extensionMessageReceived,
+  emitChromePortConnected,
+  getChromePort,
   loadOptions,
-  maximumAutoConnectionsPerSessionStore,
+  maximumAutoConnectionsPerSessionStorePubSub,
+  onChromePortConnected,
+  onChromePortMessageReceived,
   postChromePortMessage,
   startListeningToChromePortMessages,
 } from "./shared";
+
+const [emitPopupOpened, onPopupOpened] = createPubSub();
+const [emitStartButtonClicked, onStartButtonClicked] = createPubSub();
+const [emitStopButtonClicked, onStopButtonClicked] = createPubSub();
+const buttonClicksCountStorePubSub = createPubSub(0);
+const [emitButtonClicksCountUpdated] = buttonClicksCountStorePubSub;
+const isAutoConnectionRunningPubSub = createPubSub(false);
+const [emitIsAutoConnectionRunning] = isAutoConnectionRunningPubSub;
+const isActiveTabConnectedPubSub = createPubSub(false);
+const [emitIsActiveTabConnected] = isActiveTabConnectedPubSub;
+
+async function connectToActiveTab() {
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (tab.id) {
+    const port = chrome.tabs.connect(tab.id);
+    emitChromePortConnected(port);
+  }
+}
+
+function openMyNetworkPage() {
+  chrome.tabs.create({ url: LinkedInUrl.MyNetworkPage });
+}
+
+function openOptionsPage() {
+  chrome.runtime.openOptionsPage();
+}
+
+function openSearchPeoplePage() {
+  chrome.tabs.create({ url: LinkedInUrl.SearchPeoplePage });
+}
+
+function renderPopup() {
+  render(<Popup />, document.body.appendChild(document.createElement("div")));
+}
 
 function PageSelection() {
   return (
@@ -50,7 +83,7 @@ function PageSelection() {
 }
 
 function Popup() {
-  const isActiveTabConnected = useStore(isActiveTabConnectedStore);
+  const [isActiveTabConnected] = usePubSub(isActiveTabConnectedPubSub);
 
   return (
     <ChakraProvider theme={darkChakraTheme}>
@@ -71,9 +104,9 @@ function Popup() {
 }
 
 function StartStopButton() {
-  const isAutoConnectionRunning = useStore(isAutoConnectionRunningStore);
-  const buttonClicksCount = useStore(buttonClicksCountStore);
-  const maximumAutoConnectionsPerSession = useStore(maximumAutoConnectionsPerSessionStore);
+  const [isAutoConnectionRunning] = usePubSub(isAutoConnectionRunningPubSub);
+  const [buttonClicksCount] = usePubSub(buttonClicksCountStorePubSub);
+  const [maximumAutoConnectionsPerSession] = usePubSub(maximumAutoConnectionsPerSessionStorePubSub);
 
   return (
     <VStack spacing="3">
@@ -92,7 +125,7 @@ function StartStopButton() {
       <Box>
         <Button
           colorScheme={isAutoConnectionRunning ? "red" : "green"}
-          onClick={() => (isAutoConnectionRunning ? stopButtonClicked() : startButtonClicked())}
+          onClick={() => (isAutoConnectionRunning ? emitStopButtonClicked() : emitStartButtonClicked())}
           width="full"
         >
           {isAutoConnectionRunning ? "STOP" : "START"} CONNECTING
@@ -102,122 +135,39 @@ function StartStopButton() {
   );
 }
 
-const connectToActiveTab = createEffect((activeTabId: number) => chrome.tabs.connect(activeTabId));
+onChromePortConnected(startListeningToChromePortMessages);
 
-const getActiveTab = createEffect(async () => {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  return tab;
+onChromePortMessageReceived(({ message }) => {
+  switch (message.id) {
+    case MessageId.ConnectionEstablished:
+      return emitIsActiveTabConnected(true);
+    case MessageId.RunningStateUpdated:
+      return emitIsAutoConnectionRunning(message.content);
+    case MessageId.ButtonClicksCountUpdated:
+      return emitButtonClicksCountUpdated(message.content);
+  }
 });
 
-const openMyNetworkPage = createEffect(() => {
-  chrome.tabs.create({ url: LinkedInUrl.MyNetworkPage });
+onStartButtonClicked(() => {
+  const port = getChromePort();
+  if (port) {
+    postChromePortMessage({ message: { id: MessageId.StartAutoConnect }, port });
+    emitIsAutoConnectionRunning(true);
+  }
 });
 
-const openOptionsPage = createEffect(() => {
-  chrome.runtime.openOptionsPage();
+onStopButtonClicked(() => {
+  const port = getChromePort();
+  if (port) {
+    postChromePortMessage({ message: { id: MessageId.StopAutoConnect }, port });
+    emitIsAutoConnectionRunning(false);
+  }
 });
 
-const openSearchPeoplePage = createEffect(() => {
-  chrome.tabs.create({ url: LinkedInUrl.SearchPeoplePage });
+onPopupOpened(async () => {
+  await loadOptions();
+  await connectToActiveTab();
+  renderPopup();
 });
 
-const renderPopup = createEffect(() => {
-  render(<Popup />, document.body.appendChild(document.createElement("div")));
-});
-
-const activeTabConnected = createEvent();
-
-const activeTabInfoReceived = getActiveTab.doneData;
-
-const activeTabIdUpdated = guard(activeTabInfoReceived, { filter: ({ id }) => id !== undefined }).map(
-  ({ id }) => id as number
-);
-
-const buttonClicksCountUpdated = createEvent<number>();
-
-const popupOpened = createEvent();
-
-const runningStateUpdated = createEvent<boolean>();
-
-const startButtonClicked = createEvent();
-
-const stopButtonClicked = createEvent();
-
-const activeTabIdStore = restore(activeTabIdUpdated, 0);
-
-const buttonClicksCountStore = restore(buttonClicksCountUpdated, 0);
-
-const isAutoConnectionRunningStore = restore(runningStateUpdated, false);
-
-const isActiveTabConnectedStore = createStore(false).on(activeTabConnected, () => true);
-
-forward({
-  from: activeTabIdStore.updates,
-  to: connectToActiveTab,
-});
-
-forward({
-  from: chromePortConnected,
-  to: startListeningToChromePortMessages,
-});
-
-forward({
-  from: connectToActiveTab.doneData,
-  to: chromePortConnected,
-});
-
-sample({
-  clock: extensionMessageReceived[MessageId.ConnectionEstablished],
-  target: activeTabConnected,
-});
-
-forward({
-  from: extensionMessageReceived[MessageId.RunningStateUpdated].map(({ message }) => message.content),
-  to: runningStateUpdated,
-});
-
-forward({
-  from: extensionMessageReceived[MessageId.ButtonClicksCountUpdated].map(({ message }) => message.content),
-  to: buttonClicksCountUpdated,
-});
-
-forward({
-  from: popupOpened,
-  to: [renderPopup, getActiveTab],
-});
-
-sample({
-  clock: popupOpened,
-  source: combine({
-    maximumAutoConnectionsPerSession: maximumAutoConnectionsPerSessionStore,
-  }),
-  target: loadOptions,
-});
-
-guard({
-  clock: sample({
-    clock: startButtonClicked,
-    source: chromePortStore,
-    fn: (chromePort) => ({
-      message: { id: MessageId.StartAutoConnect } as Message,
-      port: chromePort,
-    }),
-  }),
-  filter: (payload): payload is ChromePortMessage => payload.port !== null,
-  target: postChromePortMessage,
-});
-
-guard({
-  clock: sample({
-    clock: stopButtonClicked,
-    source: chromePortStore,
-    fn: (chromePort) => ({
-      message: { id: MessageId.StopAutoConnect } as Message,
-      port: chromePort,
-    }),
-  }),
-  filter: (payload): payload is ChromePortMessage => payload.port !== null,
-  target: postChromePortMessage,
-});
-
-popupOpened();
+emitPopupOpened();
