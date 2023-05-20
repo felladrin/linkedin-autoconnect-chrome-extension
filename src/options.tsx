@@ -17,7 +17,6 @@ import {
 } from "@chakra-ui/react";
 import { combine, createEffect, createEvent, forward, sample } from "effector";
 import { useStore } from "effector-react";
-import React from "react";
 import { render } from "react-dom";
 import { darkChakraTheme } from "./shared";
 import { loadOptions } from "./shared";
@@ -73,7 +72,7 @@ function OptionsPage() {
 }
 
 const renderOptionsPage = createEffect(() =>
-  render(React.createElement(OptionsPage), document.body.appendChild(document.createElement("div")))
+  render(<OptionsPage />, document.body.appendChild(document.createElement("div")))
 );
 
 const { ToastContainer, toast } = createStandaloneToast();

@@ -15,7 +15,6 @@ import {
 } from "@chakra-ui/react";
 import { combine, createEffect, createEvent, createStore, forward, guard, restore, sample } from "effector";
 import { useStore } from "effector-react";
-import React from "react";
 import { render } from "react-dom";
 import { MdPeople, MdSearch, MdSettings } from "react-icons/md";
 import {
@@ -123,7 +122,7 @@ const openSearchPeoplePage = createEffect(() => {
 });
 
 const renderPopup = createEffect(() => {
-  render(React.createElement(Popup), document.body.appendChild(document.createElement("div")));
+  render(<Popup />, document.body.appendChild(document.createElement("div")));
 });
 
 const activeTabConnected = createEvent();
