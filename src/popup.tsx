@@ -18,12 +18,20 @@ import { useStore } from "effector-react";
 import React from "react";
 import { render } from "react-dom";
 import { MdPeople, MdSearch, MdSettings } from "react-icons/md";
-import { darkChakraTheme } from "../shared/constants";
-import { loadOptions, postChromePortMessage, startListeningToChromePortMessages } from "../shared/effects";
-import { LinkedInUrl, MessageId } from "../shared/enums";
-import { chromePortConnected, extensionMessageReceived } from "../shared/events";
-import { ChromePortMessage, Message } from "../shared/interfaces";
-import { chromePortStore, maximumAutoConnectionsPerSessionStore } from "../shared/stores";
+import {
+  ChromePortMessage,
+  LinkedInUrl,
+  Message,
+  MessageId,
+  chromePortConnected,
+  chromePortStore,
+  darkChakraTheme,
+  extensionMessageReceived,
+  loadOptions,
+  maximumAutoConnectionsPerSessionStore,
+  postChromePortMessage,
+  startListeningToChromePortMessages,
+} from "./shared";
 
 function PageSelection() {
   return (

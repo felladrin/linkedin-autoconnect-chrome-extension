@@ -11,11 +11,22 @@ import {
   split,
 } from "effector";
 import randomInt from "random-int";
-import { delay, loadOptions, postChromePortMessage, startListeningToChromePortMessages } from "../shared/effects";
-import { LinkedInCssSelector, LinkedInPage, LinkedInUrl, MessageId } from "../shared/enums";
-import { chromePortConnected, extensionMessageReceived } from "../shared/events";
-import { ChromePortMessage, Message } from "../shared/interfaces";
-import { chromePortStore, maximumAutoConnectionsPerSessionStore } from "../shared/stores";
+import {
+  ChromePortMessage,
+  LinkedInCssSelector,
+  LinkedInPage,
+  LinkedInUrl,
+  Message,
+  MessageId,
+  chromePortConnected,
+  chromePortStore,
+  delay,
+  extensionMessageReceived,
+  loadOptions,
+  maximumAutoConnectionsPerSessionStore,
+  postChromePortMessage,
+  startListeningToChromePortMessages,
+} from "./shared";
 
 const clickButton = createEffect((button: HTMLButtonElement) => {
   button.focus();

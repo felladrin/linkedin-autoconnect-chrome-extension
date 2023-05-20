@@ -13,8 +13,8 @@ export function executeVite(options: { mode: string }) {
         watch,
         rollupOptions: {
           input: {
-            popup: resolve(srcPath, "popup/popup.html"),
-            options: resolve(srcPath, "options/options.html"),
+            popup: resolve(srcPath, "popup.html"),
+            options: resolve(srcPath, "options.html"),
           },
         },
         chunkSizeWarningLimit: 1000,
@@ -27,7 +27,7 @@ export function executeVite(options: { mode: string }) {
       build: {
         watch,
         lib: {
-          entry: resolve(srcPath, "tab/tab.ts"),
+          entry: resolve(srcPath, "tab.ts"),
           fileName: "tab",
           formats: ["es"],
         },
