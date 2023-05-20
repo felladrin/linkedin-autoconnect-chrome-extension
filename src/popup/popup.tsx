@@ -18,18 +18,12 @@ import { useStore } from "effector-react";
 import React from "react";
 import { render } from "react-dom";
 import { MdPeople, MdSearch, MdSettings } from "react-icons/md";
-import { darkChakraTheme } from "../shared/constants/darkChakraTheme";
-import { loadOptions } from "../shared/effects/loadOptions";
-import { postChromePortMessage } from "../shared/effects/postChromePortMessage";
-import { startListeningToChromePortMessages } from "../shared/effects/startListeningToChromePortMessages";
-import { LinkedInUrl } from "../shared/enums/LinkedInUrl";
-import { MessageId } from "../shared/enums/MessageId";
-import { chromePortConnected } from "../shared/events/chromePortConnected";
-import { extensionMessageReceived } from "../shared/events/extensionMessageReceived";
-import { ChromePortMessage } from "../shared/interfaces/ChromePortMessage";
-import { Message } from "../shared/interfaces/Message";
-import { chromePortStore } from "../shared/stores/chromePortStore";
-import { maximumAutoConnectionsPerSessionStore } from "../shared/stores/maximumAutoConnectionsPerSessionStore";
+import { darkChakraTheme } from "../shared/constants";
+import { loadOptions, postChromePortMessage, startListeningToChromePortMessages } from "../shared/effects";
+import { LinkedInUrl, MessageId } from "../shared/enums";
+import { chromePortConnected, extensionMessageReceived } from "../shared/events";
+import { ChromePortMessage, Message } from "../shared/interfaces";
+import { chromePortStore, maximumAutoConnectionsPerSessionStore } from "../shared/stores";
 
 function PageSelection() {
   return (

@@ -19,10 +19,10 @@ import { combine, createEffect, createEvent, forward, sample } from "effector";
 import { useStore } from "effector-react";
 import React from "react";
 import { render } from "react-dom";
-import { darkChakraTheme } from "../shared/constants/darkChakraTheme";
-import { loadOptions } from "../shared/effects/loadOptions";
-import { maximumAutoConnectionsPerSessionChanged } from "../shared/events/maximumAutoConnectionsPerSessionChanged";
-import { maximumAutoConnectionsPerSessionStore } from "../shared/stores/maximumAutoConnectionsPerSessionStore";
+import { darkChakraTheme } from "../shared/constants";
+import { loadOptions } from "../shared/effects";
+import { maximumAutoConnectionsPerSessionChanged } from "../shared/events";
+import { maximumAutoConnectionsPerSessionStore } from "../shared/stores";
 
 const optionsSubmitted = createEvent();
 

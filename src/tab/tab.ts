@@ -11,20 +11,11 @@ import {
   split,
 } from "effector";
 import randomInt from "random-int";
-import { delay } from "../shared/effects/delay";
-import { loadOptions } from "../shared/effects/loadOptions";
-import { postChromePortMessage } from "../shared/effects/postChromePortMessage";
-import { startListeningToChromePortMessages } from "../shared/effects/startListeningToChromePortMessages";
-import { LinkedInCssSelector } from "../shared/enums/LinkedInCssSelector";
-import { LinkedInPage } from "../shared/enums/LinkedInPage";
-import { LinkedInUrl } from "../shared/enums/LinkedInUrl";
-import { MessageId } from "../shared/enums/MessageId";
-import { chromePortConnected } from "../shared/events/chromePortConnected";
-import { extensionMessageReceived } from "../shared/events/extensionMessageReceived";
-import { ChromePortMessage } from "../shared/interfaces/ChromePortMessage";
-import { Message } from "../shared/interfaces/Message";
-import { chromePortStore } from "../shared/stores/chromePortStore";
-import { maximumAutoConnectionsPerSessionStore } from "../shared/stores/maximumAutoConnectionsPerSessionStore";
+import { delay, loadOptions, postChromePortMessage, startListeningToChromePortMessages } from "../shared/effects";
+import { LinkedInCssSelector, LinkedInPage, LinkedInUrl, MessageId } from "../shared/enums";
+import { chromePortConnected, extensionMessageReceived } from "../shared/events";
+import { ChromePortMessage, Message } from "../shared/interfaces";
+import { chromePortStore, maximumAutoConnectionsPerSessionStore } from "../shared/stores";
 
 const clickButton = createEffect((button: HTMLButtonElement) => {
   button.focus();

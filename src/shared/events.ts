@@ -1,6 +1,10 @@
-import { MessageId } from "../enums/MessageId";
-import { split } from "effector";
-import { chromePortMessageReceived } from "./chromePortMessageReceived";
+import { createEvent, split } from "effector";
+import { MessageId } from "./enums";
+import { ChromePortMessage } from "./interfaces";
+
+export const chromePortConnected = createEvent<chrome.runtime.Port>();
+
+export const chromePortMessageReceived = createEvent<ChromePortMessage>();
 
 export const extensionMessageReceived = split(chromePortMessageReceived, {
   [MessageId.ConnectionEstablished]: ({ message }) => message.id === MessageId.ConnectionEstablished,
@@ -9,3 +13,5 @@ export const extensionMessageReceived = split(chromePortMessageReceived, {
   [MessageId.StartAutoConnect]: ({ message }) => message.id === MessageId.StartAutoConnect,
   [MessageId.StopAutoConnect]: ({ message }) => message.id === MessageId.StopAutoConnect,
 });
+
+export const maximumAutoConnectionsPerSessionChanged = createEvent<string>();
