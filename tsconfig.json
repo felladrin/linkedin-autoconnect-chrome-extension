@@ -8,7 +8,6 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "jsx": "react-jsx",
-    "isolatedModules": true,
-    "typeRoots": ["./node_modules/@types", "./types"]
+    "isolatedModules": true
   }
 }
