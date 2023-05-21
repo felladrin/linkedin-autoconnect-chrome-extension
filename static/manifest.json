@@ -4,10 +4,10 @@
   "description": "Automatically clicks all 'Connect' buttons available on LinkedIn 'Search People' and 'People You May Know' pages.",
   "version": "0.0.0",
   "action": {
-    "default_popup": "pages/src/popup/popup.html"
+    "default_popup": "pages/src/popup.html"
   },
   "options_ui": {
-    "page": "pages/src/options/options.html",
+    "page": "pages/src/options.html",
     "open_in_tab": true
   },
   "icons": {
