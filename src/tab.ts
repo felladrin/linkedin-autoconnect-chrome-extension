@@ -102,12 +102,6 @@ function searchForConnectButtonIfRunning() {
 }
 
 (async () => {
-  await loadOptions();
-
-  startListeningToChromePortConnections();
-
-  startOneSecondIntervalTicker();
-
   onWindowLocationUpdated((windowLocation) => {
     if (windowLocation.includes(LinkedInUrl.PatternOfSearchPage)) {
       emitSearchPageLoaded();
@@ -191,4 +185,10 @@ function searchForConnectButtonIfRunning() {
     emitCurrentLinkedInPage(LinkedInPage.SearchPeople);
     searchForConnectButtonIfRunning();
   });
+
+  await loadOptions();
+
+  startListeningToChromePortConnections();
+
+  startOneSecondIntervalTicker();
 })();

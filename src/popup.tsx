@@ -31,7 +31,6 @@ import {
   startListeningToChromePortMessages,
 } from "./shared";
 
-const [emitPopupOpened, onPopupOpened] = createPubSub();
 const [emitStartButtonClicked, onStartButtonClicked] = createPubSub();
 const [emitStopButtonClicked, onStopButtonClicked] = createPubSub();
 const buttonClicksCountStorePubSub = createPubSub(0);
@@ -135,39 +134,39 @@ function StartStopButton() {
   );
 }
 
-onChromePortConnected(startListeningToChromePortMessages);
+(async () => {
+  onChromePortConnected(startListeningToChromePortMessages);
 
-onChromePortMessageReceived(({ message }) => {
-  switch (message.id) {
-    case MessageId.ConnectionEstablished:
-      return emitIsActiveTabConnected(true);
-    case MessageId.RunningStateUpdated:
-      return emitIsAutoConnectionRunning(message.content);
-    case MessageId.ButtonClicksCountUpdated:
-      return emitButtonClicksCountUpdated(message.content);
-  }
-});
+  onChromePortMessageReceived(({ message }) => {
+    switch (message.id) {
+      case MessageId.ConnectionEstablished:
+        return emitIsActiveTabConnected(true);
+      case MessageId.RunningStateUpdated:
+        return emitIsAutoConnectionRunning(message.content);
+      case MessageId.ButtonClicksCountUpdated:
+        return emitButtonClicksCountUpdated(message.content);
+    }
+  });
 
-onStartButtonClicked(() => {
-  const port = getChromePort();
-  if (port) {
-    postChromePortMessage({ message: { id: MessageId.StartAutoConnect }, port });
-    emitIsAutoConnectionRunning(true);
-  }
-});
+  onStartButtonClicked(() => {
+    const port = getChromePort();
+    if (port) {
+      postChromePortMessage({ message: { id: MessageId.StartAutoConnect }, port });
+      emitIsAutoConnectionRunning(true);
+    }
+  });
 
-onStopButtonClicked(() => {
-  const port = getChromePort();
-  if (port) {
-    postChromePortMessage({ message: { id: MessageId.StopAutoConnect }, port });
-    emitIsAutoConnectionRunning(false);
-  }
-});
+  onStopButtonClicked(() => {
+    const port = getChromePort();
+    if (port) {
+      postChromePortMessage({ message: { id: MessageId.StopAutoConnect }, port });
+      emitIsAutoConnectionRunning(false);
+    }
+  });
 
-onPopupOpened(async () => {
   await loadOptions();
-  await connectToActiveTab();
-  renderPopup();
-});
 
-emitPopupOpened();
+  await connectToActiveTab();
+
+  renderPopup();
+})();

@@ -25,7 +25,6 @@ import {
   maximumAutoConnectionsPerSessionStorePubSub,
 } from "./shared";
 
-const [emitOptionsPageOpened, onOptionsPageOpened] = createPubSub();
 const [emitOptionsSubmitted, onOptionsSubmitted] = createPubSub();
 const { ToastContainer, toast } = createStandaloneToast();
 
@@ -84,14 +83,13 @@ function OptionsPage() {
   );
 }
 
-onOptionsSubmitted(async () => {
-  await saveOptions({ maximumAutoConnectionsPerSession: getMaximumAutoConnectionsPerSession() });
-  displayOptionsSavedToast();
-});
+(async () => {
+  onOptionsSubmitted(async () => {
+    await saveOptions({ maximumAutoConnectionsPerSession: getMaximumAutoConnectionsPerSession() });
+    displayOptionsSavedToast();
+  });
 
-onOptionsPageOpened(async () => {
   await loadOptions();
-  render(<OptionsPage />, document.body.appendChild(document.createElement("div")));
-});
 
-emitOptionsPageOpened();
+  render(<OptionsPage />, document.body.appendChild(document.createElement("div")));
+})();
