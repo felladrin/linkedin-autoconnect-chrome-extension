@@ -18,7 +18,7 @@
     "build": "tsx scripts/build.ts"
   },
   "devDependencies": {
-    "@types/archiver": "^5.1.0",
+    "@types/archiver": "^6.0.0",
     "@types/chrome": "^0.0.248",
     "@types/node": "^20.0.0",
     "@types/react-dom": "^18.0.0",
