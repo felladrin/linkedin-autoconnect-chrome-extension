@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@types/archiver": "^6.0.0",
-    "@types/chrome": "^0.0.269",
+    "@types/chrome": "^0.0.270",
     "@types/node": "^20.0.0",
     "@types/react-dom": "^18.0.0",
     "@types/shelljs": "^0.8.8",
