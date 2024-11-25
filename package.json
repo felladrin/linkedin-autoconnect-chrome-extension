@@ -1,6 +1,6 @@
 {
   "name": "linkedin-autoconnect-chrome-extension",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Automatically clicks all 'Connect' buttons available on LinkedIn 'Search People' and 'Recommended For You' pages.",
   "type": "module",
   "private": true,
