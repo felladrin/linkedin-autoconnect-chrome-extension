@@ -35,9 +35,13 @@ const [emitButtonClicksCount, onButtonClicksCountUpdated, getButtonClicksCount] 
 const [emitCurrentLinkedInPage, , getCurrentLinkedInPage] = createPubSub(LinkedInPage.Unidentified);
 const [emitIsRunning, onIsRunningUpdated, getIsRunning] = createPubSub(false);
 
+function focusAndClickElement(element: HTMLElement) {
+  element.focus();
+  element.click();
+}
+
 function clickConnectButton(button: HTMLButtonElement) {
-  button.focus();
-  button.click();
+  focusAndClickElement(button);
   button.setAttribute("disabled", "disabled");
   emitConnectButtonClicked();
 }
@@ -47,11 +51,34 @@ function confirmSendInviteModal() {
     let attempts = 0;
 
     const interval = setInterval(() => {
+      const closeSendInMailsModalButton = document.querySelector(
+        LinkedInCssSelector.CloseSendInMailsModalButton
+      )?.parentElement;
+
+      if (closeSendInMailsModalButton) {
+        focusAndClickElement(closeSendInMailsModalButton);
+      }
+
+      const sendInMailsModalDismissButton = document.querySelector<HTMLButtonElement>(
+        LinkedInCssSelector.SendInMailsModalDismissButton
+      );
+
+      if (sendInMailsModalDismissButton) {
+        focusAndClickElement(sendInMailsModalDismissButton);
+      }
+
       const sendButton = document.querySelector<HTMLButtonElement>(LinkedInCssSelector.SendButtonFromSendInviteModal);
 
-      sendButton?.click();
+      if (sendButton) {
+        focusAndClickElement(sendButton);
+      }
 
-      if (sendButton || ++attempts > maximumAttemptsForFindingHtmlElements) {
+      if (
+        sendButton ||
+        sendInMailsModalDismissButton ||
+        closeSendInMailsModalButton ||
+        ++attempts > maximumAttemptsForFindingHtmlElements
+      ) {
         clearInterval(interval);
         resolve(null);
       }
