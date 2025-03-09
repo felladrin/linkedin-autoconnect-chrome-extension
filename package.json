@@ -24,7 +24,7 @@
     "@types/react-dom": "^18.0.0",
     "@types/shelljs": "^0.8.8",
     "archiver": "^7.0.0",
-    "shelljs": "^0.8.4",
+    "shelljs": "^0.9.0",
     "tsx": "^4.0.0",
     "typescript": "^5.0.0",
     "vite": "^6.0.0"
